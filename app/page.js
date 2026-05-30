@@ -1,7 +1,17 @@
-﻿import Form from "./cfg_entry";
+﻿"use client"
+import Form from "./cfg_entry";
 
+async function test(){
+    console.log(1)
+    
+    let res = await fetch("https://dummyjson.com/quotes")
+    let json = await res.json()
+    console.log(json.quotes)
+  
+}
 
-export default async function HomePage() {
+export default function HomePage() {
+  
   test();
   
   
@@ -46,21 +56,4 @@ function LandingPage(){
   );
 }
 
-async function test(){
 
-    let p = new Promise(async (resolve, reject) => {
-      let res = await (await fetch('api/route')).text()
-      console.log(1)
-      if (false){
-        
-        resolve('Output ' + res)
-      }
-      else{
-        reject('failed')
-      }
-
-    })
-    p.then(message=>console.log(message));
-    p.catch(message=>console.log(message));
-  
-}
