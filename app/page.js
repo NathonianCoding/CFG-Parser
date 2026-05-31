@@ -1,22 +1,9 @@
-﻿"use client"
-import Form from "./cfg_entry";
+﻿import Form from "./cfg_entry";
 
-async function test(){
-    console.log(1)
-    
-    let res = await fetch("https://dummyjson.com/quotes")
-    let json = await res.json()
-    console.log(json.quotes)
-  
-}
 
 export default function HomePage() {
   
-  test();
-  
-  
-  
-  
+
   return (
     <>
      
@@ -55,5 +42,4 @@ function LandingPage(){
     </div>
   );
 }
-
 
