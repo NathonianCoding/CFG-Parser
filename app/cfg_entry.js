@@ -15,7 +15,7 @@ export default function Form(){
 
     
 
-    //let []
+    let [validCFG, setValid] = useState(true);
    
     return (
 
@@ -47,7 +47,7 @@ export default function Form(){
                         CFG Rules
                     </label>
                     <p className="text-xs text-slate-400 -mt-1">Separate each rule with a semicolon</p>
-                    <CfgEntryBox cfg={cfg} cfgTextArea={cfgTextArea} setText={setText}/>
+                    <CfgEntryBox cfg={cfg} cfgTextArea={cfgTextArea} setText={setText} validCFG={validCFG}/>
                     </div>
 
                     {/* Actions */}
@@ -79,10 +79,10 @@ export default function Form(){
 
                         <button
                             type="submit"
-                            onClick={(e)=>handleSubmission(e, cfg, word)}
+                            onClick={(e)=>handleSubmission(e, cfg, word, setValid)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
-                            Submit
+                            Parse
                         </button>
                     </div>
             
@@ -108,20 +108,40 @@ function WordEntryBox({word, wordTextArea, setWord}){
     );
 }
 
-function CfgEntryBox({cfg, cfgTextArea, setText}){
-    return (
-        <textarea
+function CfgEntryBox({cfg, cfgTextArea, setText, validCFG}){
+    if (validCFG){
+        return (
+            <textarea
 
-            rows={5}
-            ref={cfgTextArea}
-            onChange={(e) => setText(e.target.value)}
-            name="cfg"
-            value={cfg}
-            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent placeholder:text-slate-400 transition"
-            placeholder={"S → aSb | ε"}
-        />
-    );
+                rows={5}
+                ref={cfgTextArea}
+                onChange={(e) => setText(e.target.value)}
+                name="cfg"
+                value={cfg}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent placeholder:text-slate-400 transition"
+                placeholder={"S → aSb | ε"}
+            />
+        );
+    }
+    else{
+        return (
+            <>
+            <textarea
 
+                rows={5}
+                ref={cfgTextArea}
+                onChange={(e) => setText(e.target.value)}
+                name="cfg"
+                value={cfg}
+                className="w-full bg-slate-50 border border-red-100 rounded-lg px-4 py-3 text-slate-900 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent placeholder:text-slate-400 transition"
+                placeholder={"S → aSb | ε"}
+            />
+            <p className='text-xs text-red-900'>Invalid CFG</p>
+            </>
+        );
+
+    }
+    
 }
 
 function insertChar(txt, setText, textArea, char){
@@ -132,19 +152,38 @@ function insertChar(txt, setText, textArea, char){
 
 }
 
-function handleSubmission(e, cfg, word){
+function handleSubmission(e, cfg, word, setValid){
     e.preventDefault();
-    console.log(cfg, word)
+    if (!isValidCFG(cfg)){
+        setValid(false);
+
+    }
+    else{
+        setValid(true);
+    }
 }
 
 function handleConversion(e, cfg){
     e.preventDefault();
-    // if !isValidCFG(cfg){}
+    
 }
 
 function isValidCFG(cfg){
-    cfg = cfg.split(" ").join("");
-    let validCFG=/^[A-Z]→(([a-z]|[A-Z])+|ε)(\|(([a-z]|[A-Z])+|ε))*(,[A-Z]→(([a-z]|[A-Z])+|ε)(\|(([a-z]|[A-Z])+|ε))*)*$/.test(cfg);
+    
+    console.log(cfg)
+    let newString="";
+    for(let i=0; i<cfg.length; i++){
+        if (cfg.charAt(i)!=" " && cfg.charAt(i)!='\n'){
+            newString+=cfg.charAt(i)
+        }
+    }
+    console.log(newString);
+   
+    
+    
+    
+    
+    let validCFG=/^[A-Z]→(([a-z]|[A-Z])+|ε)(\|(([a-z]|[A-Z])+|ε))*(;(\s)*[A-Z]→(([a-z]|[A-Z])+|ε)(\|(([a-z]|[A-Z])+|ε))*)*$/.test(newString);
     return validCFG;
 }
 
