@@ -25,7 +25,7 @@ export function formatCFG(cfg){
         // console.log(list_of_vars_2d);
         formattedCFG.set(start, list_of_vars_2d);
     }
-    // console.log(formattedCFG);
+    console.log(formattedCFG);
 
     return formattedCFG;
 }
@@ -39,7 +39,8 @@ function getVarsList(string){
     let i=0;
     while (i<string.length){
         let variable = "" + string.charAt(i);
-        while (i<string.length-1 && /[0-9]/.test(string.charAt(i))){
+        // Adds a non-terminal with a number as one element
+        while (i<string.length-1 && /[A-Z]/.test(string.charAt(i))  && /[0-9]/.test(string.charAt(i+1))){
             i++;
             variable+=string.charAt(i);
         }
@@ -50,3 +51,7 @@ function getVarsList(string){
 
     return lst;
 }
+
+// export function checkInCNF(cfg){
+
+// }

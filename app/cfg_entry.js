@@ -110,6 +110,7 @@ function WordEntryBox({word, wordTextArea, setWord}){
 }
 
 function CfgEntryBox({cfg, cfgTextArea, setText, validCFG}){
+   
     if (validCFG){
         return (
             <textarea
@@ -123,6 +124,7 @@ function CfgEntryBox({cfg, cfgTextArea, setText, validCFG}){
                 placeholder={"S → aSb | ε"}
             />
         );
+     
     }
     else{
         return (
@@ -168,11 +170,9 @@ function handleSubmission(e, cfg, word, setValid){
 
     }
     else{
-        setValid(true);
         let cfgHashMap = formatCFG(cfg);
-        for (const [key, value] of cfgHashMap){
-            console.log(cfgHashMap.get(key));
-        }
+        setValid(cfgComplete(cfgHashMap)); // changes validity of cfg after checking if it's complete
+        
 
     }
 }
@@ -187,5 +187,19 @@ function isValidCFG(cfg){
     let validCFG=/^[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9])+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*(;(\s)*[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*)*$/.test(cfg);
     return validCFG;
 }
-
+// takes a hashmap as a parameter and outputs true if there are no non-terminals without a transition rule 
+function cfgComplete(cfg){
+    for (const [key, value] of cfg){
+            for (const array of value){
+                for (const symbol of array){
+                    // if is non-terminal and doesn't have a transition rule
+                    if (/[A-Z][0-9]*/.test(symbol) && !cfg.has(symbol)){
+                        return false;
+                        
+                    }
+                }
+            }
+        }
+    return true;
+}
 
