@@ -2,6 +2,8 @@
 import {useState} from 'react';
 import {useRef} from 'react';
 import {formatCFG} from './cfg_processing'
+import { Popover } from "@headlessui/react";
+
 
 
 
@@ -44,10 +46,24 @@ export default function Form(){
 
                     {/* CFG input */}
                     <div className="flex flex-col gap-2">
-                    <label className="text-sm font-semibold text-slate-700 tracking-wide uppercase">
-                        CFG Rules
-                    </label>
-                    <p className="text-xs text-slate-400 -mt-1">Separate each rule with a semicolon</p>
+                        <div className="flex gap-1">
+                            <label className="text-sm font-semibold text-slate-700 tracking-wide uppercase">
+                                CFG Rules
+                            </label>
+                            <Popover>
+                                <Popover.Button className="w-5 h-5 rounded-full bg-blue-100 text-slate-700 text-xs font-semibold italic flex items-center justify-center">
+                                    i
+                                </Popover.Button>
+
+                                <Popover.Panel className="absolute z-10 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-sm text-gray-700">
+                                    <ul className="flex flex-col gap-1 list-disc">
+                                        <li>Separate each rule with a semi colon</li>
+                                        <li>Non-terminal variables must be upper case and can optionally have a number (e.g.S0)</li>
+                                        <li>Separate each transition in a rule with a vertical bar (|)</li>
+                                    </ul>
+                                </Popover.Panel>
+                            </Popover>
+                        </div>
                     <CfgEntryBox cfg={cfg} cfgTextArea={cfgTextArea} setText={setText} validCFG={validCFG}/>
                     </div>
 
