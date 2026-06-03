@@ -160,6 +160,7 @@ function handleSubmission(e, cfg, word, setValid){
     }
     else{
         setValid(true);
+        
     }
 }
 
@@ -183,7 +184,7 @@ function isValidCFG(cfg){
     
     
     
-    let validCFG=/^[A-Z]→(([a-z]|[A-Z])+|ε)(\|(([a-z]|[A-Z])+|ε))*(;(\s)*[A-Z]→(([a-z]|[A-Z])+|ε)(\|(([a-z]|[A-Z])+|ε))*)*$/.test(newString);
+    let validCFG=/^[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9])+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*(;(\s)*[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*)*$/.test(newString);
     return validCFG;
 }
 
