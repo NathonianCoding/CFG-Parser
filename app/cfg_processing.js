@@ -1,4 +1,6 @@
-﻿// formats cfg into a hashmap where the key is a string and the value is a 2d array
+﻿
+
+// formats cfg into a hashmap where the key is a string and the value is a 2d array
 export function formatCFG(cfg){
     let formattedCFG = new Map();
     let array=cfg.split(';');
@@ -52,6 +54,48 @@ function getVarsList(string){
     return lst;
 }
 
-// export function checkInCNF(cfg){
+export function checkInCNF(cfg, start){
+    for (let [key, value] of cfg){
+        for (let array of value){
+            for (let symbol of array){
+                if (!(checkStart(start, symbol) && checkProductionLength(symbol) && checkEpsilon(start, symbol) && checkU)){
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 
-// }
+}
+
+function checkStart(start, symbol){
+    return symbol!=start;
+}
+
+function checkProductionLength(symbol){
+    return symbol.length<=2;
+
+}
+
+function checkEpsilon(start, symbol){
+    return (symbol== 'ε' && symbol==start) || symbol!='ε';
+}
+
+function checkUnitRule(symbol){
+    return (/[a-z0-9]/.test(symbol) || /([A-Z][A-Z]|[A-Z][0-9]*){2}/.test(symbol));
+}
+
+function checkTerm(symbol){
+    if (symbol.length>1){
+        for (let char of symbol){
+            if (/[a-z]/.test(char)){
+                return false;
+            }
+        }
+
+    }
+    return true;
+}
+
+console.log("a");
+console.log(checkUnitRule("a"));

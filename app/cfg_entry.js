@@ -60,6 +60,7 @@ export default function Form(){
                                         <li>Separate each rule with a semi colon</li>
                                         <li>Non-terminal variables must be upper case and can optionally have a number (e.g.S0)</li>
                                         <li>Separate each transition in a rule with a vertical bar (|)</li>
+                                        <li>The rule for the first variable must be first</li>
                                     </ul>
                                 </Popover.Panel>
                             </Popover>
@@ -163,6 +164,7 @@ function CfgEntryBox({cfg, cfgTextArea, setText, validCFG}){
     
 }
 
+
 function insertChar(txt, setText, textArea, char){
     let start = textArea.current.selectionStart;
     let end = textArea.current.selectionEnd;
@@ -171,6 +173,7 @@ function insertChar(txt, setText, textArea, char){
 
 }
 
+// updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
 function handleSubmission(e, cfg, word, setValid){
     e.preventDefault();
     
@@ -198,9 +201,11 @@ function handleConversion(e, cfg){
     
 }
 
+// checks cfg syntax 
 function isValidCFG(cfg){
+    console.log(cfg);
     
-    let validCFG=/^[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9])+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*(;(\s)*[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*)*$/.test(cfg);
+    let validCFG=/^[A-Z][0-9]*→(([a-z0-9]|[A-Z]|[A-Z][0-9])+|ε)(\|(([a-z0-9]|[A-Z]|[A-Z][0-9]*)+|ε))*(;(\s)*[A-Z][0-9]*→(([a-z0-9]|[A-Z]|[A-Z][0-9]*)+|ε)(\|(([a-z0-9]|[A-Z]|[A-Z][0-9]*)+|ε))*)*$/.test(cfg);
     return validCFG;
 }
 // takes a hashmap as a parameter and outputs true if there are no non-terminals without a transition rule 
