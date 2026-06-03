@@ -1,6 +1,7 @@
 ﻿'use client';
 import {useState} from 'react';
-import { useRef } from 'react';
+import {useRef} from 'react';
+import {formatCFG} from './cfg_processing'
 
 
 
@@ -133,7 +134,7 @@ function CfgEntryBox({cfg, cfgTextArea, setText, validCFG}){
                 onChange={(e) => setText(e.target.value)}
                 name="cfg"
                 value={cfg}
-                className="w-full bg-slate-50 border border-red-100 rounded-lg px-4 py-3 text-slate-900 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent placeholder:text-slate-400 transition"
+                className="w-full border-t-2 border-l-2 border-r-2 border-b-2 bg-slate-50 border border-red-500 rounded-lg px-4 py-3 text-slate-900 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent placeholder:text-slate-400 transition"
                 placeholder={"S → aSb | ε"}
             />
             <p className='text-xs text-red-900'>Invalid CFG</p>
@@ -154,13 +155,25 @@ function insertChar(txt, setText, textArea, char){
 
 function handleSubmission(e, cfg, word, setValid){
     e.preventDefault();
+    
+    let newString="";
+    for(let i=0; i<cfg.length; i++){
+        if (cfg.charAt(i)!=" " && cfg.charAt(i)!='\n'){
+            newString+=cfg.charAt(i)
+        }
+    }
+    cfg=newString;
     if (!isValidCFG(cfg)){
         setValid(false);
 
     }
     else{
         setValid(true);
-        
+        let cfgHashMap = formatCFG(cfg);
+        for (const [key, value] of cfgHashMap){
+            console.log(cfgHashMap.get(key));
+        }
+
     }
 }
 
@@ -171,20 +184,7 @@ function handleConversion(e, cfg){
 
 function isValidCFG(cfg){
     
-    console.log(cfg)
-    let newString="";
-    for(let i=0; i<cfg.length; i++){
-        if (cfg.charAt(i)!=" " && cfg.charAt(i)!='\n'){
-            newString+=cfg.charAt(i)
-        }
-    }
-    console.log(newString);
-   
-    
-    
-    
-    
-    let validCFG=/^[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9])+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*(;(\s)*[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*)*$/.test(newString);
+    let validCFG=/^[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9])+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*(;(\s)*[A-Z][0-9]*→(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε)(\|(([a-z]|[A-Z]|[A-Z][0-9]*)+|ε))*)*$/.test(cfg);
     return validCFG;
 }
 
