@@ -14,12 +14,8 @@ export default function Form(){
     let [word, setWord] = useState("");
     let wordTextArea = useRef(null);
 
-  
-
-    
-
     let [validCFG, setValid] = useState(true);
-   
+    let [inCNF, setInCNF] = useState(true);
     return (
 
         <form id="parser" className="bg-white rounded-2xl shadow-xl shadow-slate-200 border border-slate-100 p-8 flex flex-col gap-6">
@@ -65,7 +61,7 @@ export default function Form(){
                                 </Popover.Panel>
                             </Popover>
                         </div>
-                    <CfgEntryBox cfg={cfg} cfgTextArea={cfgTextArea} setText={setText} validCFG={validCFG}/>
+                    <CfgEntryBox cfg={cfg} cfgTextArea={cfgTextArea} setText={setText} validCFG={validCFG} inCNF={inCNF}/>
                     </div>
 
                     {/* Actions */}
@@ -97,7 +93,7 @@ export default function Form(){
 
                         <button
                             type="submit"
-                            onClick={(e)=>handleSubmission(e, cfg, word, setValid)}
+                            onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
                             Parse
@@ -126,9 +122,23 @@ function WordEntryBox({word, wordTextArea, setWord}){
     );
 }
 
-function CfgEntryBox({cfg, cfgTextArea, setText, validCFG}){
+function ErrorMessage({validCFG, inCNF}){
+    if (validCFG && !inCNF){
+        
+        return <p className='text-xs text-red-900'>CFG not in CNF. Press 'Convert to CNF to parse the word'</p>;
+    }
+
+    if (!validCFG){
+        
+        return <p className='text-xs text-red-900'>Invalid CFG</p>;
+    }
+
+}
+
+function CfgEntryBox({cfg, cfgTextArea, setText, validCFG, inCNF}){
+
    
-    if (validCFG){
+    if (validCFG && inCNF){
         return (
             <textarea
 
@@ -156,11 +166,13 @@ function CfgEntryBox({cfg, cfgTextArea, setText, validCFG}){
                 className="w-full border-t-2 border-l-2 border-r-2 border-b-2 bg-slate-50 border border-red-500 rounded-lg px-4 py-3 text-slate-900 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent placeholder:text-slate-400 transition"
                 placeholder={"S → aSb | ε"}
             />
-            <p className='text-xs text-red-900'>Invalid CFG</p>
+            <ErrorMessage validCFG={validCFG} inCNF={inCNF}/>
             </>
         );
 
     }
+
+    
     
 }
 
@@ -174,7 +186,7 @@ function insertChar(txt, setText, textArea, char){
 }
 
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
-function handleSubmission(e, cfg, word, setValid){
+function handleSubmission(e, cfg, word, setValid, setInCNF){
     e.preventDefault();
     
     let newString="";
@@ -193,7 +205,7 @@ function handleSubmission(e, cfg, word, setValid){
         let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
         setValid(cfgComplete(cfgHashMap)); // changes validity of cfg after checking if it's complete
        
-        console.log(checkInCNF(cfgHashMap, startVar))
+        setInCNF(checkInCNF(cfgHashMap, startVar));
     }
 }
 
