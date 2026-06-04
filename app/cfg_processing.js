@@ -57,38 +57,67 @@ function getVarsList(string){
 export function checkInCNF(cfg, start){
     for (let [key, value] of cfg){
         for (let array of value){
-            for (let symbol of array){
-                if (!(checkStart(start, symbol) && checkProductionLength(symbol) && checkEpsilon(start, symbol) && checkU)){
-                    return false;
-                }
+            console.log("Prod rule: "+ array.join(''))
+            let symbol = array.join(''); // joins the variables in the production to one string 
+            if (!(checkStart(start, symbol) && checkProductionLength(symbol) && checkEpsilon(start, symbol) && checkUnitRule(symbol) && checkTerm(symbol))){
+                
+                return false;
+            }
             }
         }
-    }
     return true;
+    }
+    
 
-}
+
 
 function checkStart(start, symbol){
+    if (symbol == start){
+        console.log("Failed start: start=" + start + " Symbol = " + symbol);
+    }
     return symbol!=start;
 }
 
 function checkProductionLength(symbol){
+    if (symbol.length>2){
+        console.log("Failed length: " + symbol)
+    }
     return symbol.length<=2;
 
 }
 
 function checkEpsilon(start, symbol){
+    if (!((symbol== 'ε' && symbol==start) || symbol!='ε')){
+        console.log("Failed Epsilon: "+ start + ", " + symbol)
+    }
     return (symbol== 'ε' && symbol==start) || symbol!='ε';
 }
 
 function checkUnitRule(symbol){
-    return (/[a-z0-9]/.test(symbol) || /([A-Z][A-Z]|[A-Z][0-9]*){2}/.test(symbol));
+   
+    if (symbol.length == 1){
+        if (!(/[a-z0-9]/.test(symbol))){
+            console.log("Failed unit: " + symbol);
+        }
+            
+        return /[a-z0-9]/.test(symbol);
+    }
+
+    else if (symbol.length==2){
+        if (!(!/[A-Z][0-9]/.test(symbol))){
+            console.log("Failed unit: " + symbol)
+        }
+        
+        return !/[A-Z][0-9]/.test(symbol); // chevks if it is a non-terminal with a number
+    }
+    return true;
 }
 
 function checkTerm(symbol){
     if (symbol.length>1){
         for (let char of symbol){
             if (/[a-z]/.test(char)){
+                console.log("Failed term: "+ symbol)
                 return false;
             }
         }
@@ -97,5 +126,3 @@ function checkTerm(symbol){
     return true;
 }
 
-console.log("a");
-console.log(checkUnitRule("a"));

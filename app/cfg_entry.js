@@ -1,7 +1,7 @@
 ﻿'use client';
 import {useState} from 'react';
 import {useRef} from 'react';
-import {formatCFG} from './cfg_processing'
+import {formatCFG, checkInCNF} from './cfg_processing'
 import { Popover } from "@headlessui/react";
 
 
@@ -190,9 +190,10 @@ function handleSubmission(e, cfg, word, setValid){
     }
     else{
         let cfgHashMap = formatCFG(cfg);
+        let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
         setValid(cfgComplete(cfgHashMap)); // changes validity of cfg after checking if it's complete
-        
-
+       
+        console.log(checkInCNF(cfgHashMap, startVar))
     }
 }
 
