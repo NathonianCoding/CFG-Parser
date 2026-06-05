@@ -125,7 +125,7 @@ function WordEntryBox({word, wordTextArea, setWord}){
 function ErrorMessage({validCFG, inCNF}){
     if (validCFG && !inCNF){
         
-        return <p className='text-xs text-red-900'>CFG not in CNF. Press 'Convert to CNF to parse the word'</p>;
+        return <p className='text-xs text-red-900'>CFG not in CNF. Press 'Convert to CNF' to parse the word</p>;
     }
 
     if (!validCFG){
