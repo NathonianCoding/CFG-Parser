@@ -1,6 +1,4 @@
-﻿
-
-// formats cfg into a hashmap where the key is a string and the value is a 2d array
+﻿// formats cfg into a hashmap where the key is a string and the value is a 2d array
 export function formatCFG(cfg){
     let formattedCFG = new Map();
     let array=cfg.split(';');
@@ -58,39 +56,50 @@ export function checkInCNF(cfg, start){
     for (let [key, value] of cfg){
         for (let array of value){
             console.log("Prod rule: "+ array.join(''))
-            let symbol = array.join(''); // joins the variables in the production to one string 
-            if (!(checkStart(start, symbol) && checkProductionLength(symbol) && checkEpsilon(start, symbol) && checkUnitRule(symbol) && checkTerm(symbol))){
+            let symbol = array.join(''); //combines individual terminal/non-terminal variables to a single variable
+            console.log("Array: "+ array.toString())
+            if (!(checkStart(start, array) && checkProductionLength(array) && checkEpsilon(start, array, key) && checkUnitRule(symbol) && checkTerm(array))){
                 
                 return false;
             }
             }
         }
     return true;
-    }
+}
     
 
 
 
-function checkStart(start, symbol){
-    if (symbol == start){
-        console.log("Failed start: start=" + start + " Symbol = " + symbol);
+function checkStart(start, array){
+    for (let symbol of array){
+        if (symbol == start){
+            console.log("Failed start: start=" + start + " Symbol = " + symbol);
+            return false;
+        }
+
     }
-    return symbol!=start;
+    
+    return true;
 }
 
-function checkProductionLength(symbol){
-    if (symbol.length>2){
-        console.log("Failed length: " + symbol)
+function checkProductionLength(array){
+    if (array.length>2){
+        console.log("Failed length: " + array.toString())
     }
-    return symbol.length<=2;
+    return array.length<=2;
 
 }
 
-function checkEpsilon(start, symbol){
-    if (!((symbol== 'ε' && symbol==start) || symbol!='ε')){
-        console.log("Failed Epsilon: "+ start + ", " + symbol)
+function checkEpsilon(start, array, key){
+    for (let symbol of array){
+        if (symbol == '' && start!=key){
+            console.log("Failed Epsilon: "+ start + ", " + symbol + "Key " + key);
+            return false;
+        }
+
     }
-    return (symbol== 'ε' && symbol==start) || symbol!='ε';
+    
+    return true;
 }
 
 function checkUnitRule(symbol){
@@ -105,7 +114,7 @@ function checkUnitRule(symbol){
 
     else if (symbol.length==2){
         if (!(!/[A-Z][0-9]/.test(symbol))){
-            console.log("Failed unit: " + symbol)
+            console.log("Failed unit: " + symbol);
         }
         
         return !/[A-Z][0-9]/.test(symbol); // chevks if it is a non-terminal with a number
@@ -113,10 +122,10 @@ function checkUnitRule(symbol){
     return true;
 }
 
-function checkTerm(symbol){
-    if (symbol.length>1){
-        for (let char of symbol){
-            if (/[a-z]/.test(char)){
+function checkTerm(array){
+    if (array.length>1){
+        for (let symbol of array){
+            if (/^[a-z0-9]$/.test(symbol)){
                 console.log("Failed term: "+ symbol)
                 return false;
             }

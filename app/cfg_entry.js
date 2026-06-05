@@ -1,7 +1,7 @@
 ﻿'use client';
 import {useState} from 'react';
 import {useRef} from 'react';
-import {formatCFG, checkInCNF} from './cfg_processing'
+import {formatCFG, checkInCNF} from './CNF_format_check'
 import { Popover } from "@headlessui/react";
 
 
