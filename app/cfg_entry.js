@@ -54,6 +54,7 @@ export default function Form(){
                                 <Popover.Panel className="absolute z-10 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-sm text-gray-700">
                                     <ul className="flex flex-col gap-1 list-disc">
                                         <li>Separate each rule with a semi colon</li>
+                                        <li>Terminals must be alphanumerical</li>
                                         <li>Non-terminal variables must be upper case and can optionally have a number (e.g.S0)</li>
                                         <li>Separate each transition in a rule with a vertical bar (|)</li>
                                         <li>The rule for the first variable must be first</li>
