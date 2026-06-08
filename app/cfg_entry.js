@@ -7,7 +7,9 @@ import { Popover } from "@headlessui/react";
 
 
 
-export default function Form(){
+export default function Form({setResult}){
+  
+
     let [cfg, setText] = useState("");
     let cfgTextArea = useRef(null);
 
@@ -94,7 +96,7 @@ export default function Form(){
 
                         <button
                             type="submit"
-                            onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF)}
+                            onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF, setResult)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
                             Parse
@@ -187,7 +189,7 @@ function insertChar(txt, setText, textArea, char){
 }
 
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
-function handleSubmission(e, cfg, word, setValid, setInCNF){
+function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
     e.preventDefault();
     
     let newString="";

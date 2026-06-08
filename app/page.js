@@ -1,14 +1,18 @@
-﻿import Form from "./cfg_entry";
+﻿'use client';
+import Form from "./cfg_entry";
+import {useState} from 'react';
 
 
 export default function HomePage() {
+  let [result, setResult] = useState(null);
   
+
 
   return (
     <>
      
     <LandingPage/>
-    <Form/>
+    <Form setResult = {setResult}/>
     </>
   );
 }
