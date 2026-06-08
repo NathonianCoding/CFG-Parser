@@ -5,7 +5,7 @@ import {useState} from 'react';
 export default function Results({results}){
     let [diagram, setDiagram] = useState(0); // 0 means display CYK grid 1 means displays parse tree
     return (
-        <section id="results" className="bg-slate-100 h-64">
+        <section id="results" className="bg-slate-100 h-96">
             <DiagramButtons diagram = {diagram} setDiagram={setDiagram}/>
             <div className="border border-dashed border-black-300">
               <Diagram diagram = {diagram} results = {results}/>  

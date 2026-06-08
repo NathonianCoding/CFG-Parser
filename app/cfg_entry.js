@@ -20,7 +20,7 @@ export default function Form({setResult}){
     let [inCNF, setInCNF] = useState(true);
     return (
 
-        <form id="parser" className="bg-white rounded-2xl shadow-xl shadow-slate-200 border border-slate-100 p-8 flex flex-col gap-6">
+        <form action = "#results" id="parser" className="bg-white rounded-2xl shadow-xl shadow-slate-200 border border-slate-100 p-8 flex flex-col gap-6">
             <fieldset>
 
                     {/* Word input */}
@@ -87,7 +87,7 @@ export default function Form({setResult}){
                         </button>
 
                         <button
-                            type="submit"
+                            type="button"
                             onClick={(e)=>handleConversion(e, cfg)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
@@ -190,7 +190,7 @@ function insertChar(txt, setText, textArea, char){
 
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
 function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
-    e.preventDefault();
+   
     
     let newString="";
     for(let i=0; i<cfg.length; i++){
@@ -201,14 +201,25 @@ function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
     cfg=newString;
     if (!isValidCFG(cfg)){
         setValid(false);
+        e.preventDefault();
 
     }
     else{
         let cfgHashMap = formatCFG(cfg);
         let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
-        setValid(cfgComplete(cfgHashMap)); // changes validity of cfg after checking if it's complete
-       
-        setInCNF(checkInCNF(cfgHashMap, startVar));
+        
+        let complete = cfgComplete(cfgHashMap);
+        if (!complete){
+            e.preventDefault();
+        }
+        setValid(complete); // changes validity of cfg after checking if it's complete
+        
+        let isInCNF = checkInCNF(cfgHashMap, startVar) 
+
+        if (!isInCNF){
+            e.preventDefault();
+        }
+        setInCNF(isInCNF);
     }
 }
 
