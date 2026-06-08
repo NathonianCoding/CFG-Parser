@@ -1,7 +1,7 @@
 ﻿'use client';
 import Form from "./cfg_entry";
 import {useState} from 'react';
-
+import Results from "./result_rendering"
 
 export default function HomePage() {
   let [result, setResult] = useState(null);
@@ -13,6 +13,7 @@ export default function HomePage() {
      
     <LandingPage/>
     <Form setResult = {setResult}/>
+    <Results resuult = {result}/>
     </>
   );
 }
