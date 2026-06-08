@@ -187,7 +187,7 @@ function insertChar(txt, setText, textArea, char){
 }
 
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
-function handleSubmission(e, cfg, word, setValid, setInCNF){
+async function handleSubmission(e, cfg, word, setValid, setInCNF){
     e.preventDefault();
     
     let newString="";
@@ -206,7 +206,7 @@ function handleSubmission(e, cfg, word, setValid, setInCNF){
         let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
         setValid(cfgComplete(cfgHashMap)); // changes validity of cfg after checking if it's complete
        
-        setInCNF(checkInCNF(cfgHashMap, startVar));
+        setInCNF(await (checkInCNF(cfgHashMap, startVar)));
     }
 }
 
