@@ -52,7 +52,7 @@ function getVarsList(string){
     return lst;
 }
 
-export async function checkInCNF(cfg, start){
+export function checkInCNF(cfg, start){
     for (let [key, value] of cfg){
         for (let array of value){
             console.log("Prod rule: "+ array.join(''))
