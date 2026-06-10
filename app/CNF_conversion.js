@@ -50,6 +50,7 @@ function applyBinRule(map, additional_rules, count){
     return [count, map, additional_rules];
 }
 
+// returns true if epsilons only appear in the start variable rule, false otherwise
 function DelRuleSatisfied(map, start){
     console.log(map)
     
@@ -65,6 +66,7 @@ function DelRuleSatisfied(map, start){
     return true;
 }
 
+// returns true if a subarray is in a 2d array flase otherwise
 function subarrayInArray(item, arr){
     let string = item.toString();
     for (element of arr){
@@ -126,6 +128,7 @@ function applyDelRule(map, start){
     return map;
 }
 
+// returns index of subarray in a 2d array
 function getSubArrayIndex(subarray, arr){
     let string = subarray.toString();
     for (let i=0; i<arr.length; i++){
