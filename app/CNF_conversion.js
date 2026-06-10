@@ -51,9 +51,13 @@ function applyBinRule(map, additional_rules, count){
 }
 
 function DelRuleSatisfied(map, start){
+    console.log(map)
+    
     for ([key, value] of map){
         for (production of value){
-            if (production == [''] && key!=start){
+            
+            if (production.toString() == '' && key!=start){
+               
                 return false;
             }
         }
@@ -61,16 +65,83 @@ function DelRuleSatisfied(map, start){
     return true;
 }
 
+function subarrayInArray(item, arr){
+    let string = item.toString();
+    for (element of arr){
+        if (element.toString() == string){
+            return true;
+        }
+    }
+    return false;
+}
+// updates rest of CFG after removing an epsilon production
+function updateRules(updatedKey, map){
+
+    for ([key,value] of map){
+        for (production of value){
+            for (let i=0; i<production.length; i++){
+                if (production[i] == updatedKey){
+                    newProduction = production.slice(0,i).concat(production.slice(i+1));
+                    
+                    if (!subarrayInArray(newProduction, value)){
+                        console.log("New Prod "+newProduction)
+                        if (newProduction.toString() == [].toString()){
+                            newProduction = [''];
+                        }
+                        value = value.concat([newProduction])
+                        console.log("New value")
+                        console.log(value)
+                        map.set(key, value)
+                    }
+                }
+            }
+        }
+
+    }
+}
 function applyDelRule(map, start){
-    while (!DelRuleSatisfied(map, start)){}
+   
+    while (!DelRuleSatisfied(map, start)){
+     
+        for ([key, value] of map){
+            if (key!=start){
+                
+                if (subarrayInArray([''], value)){
+                    
+                   
+                    while (subarrayInArray([''], value)){
+                        console.log(value)
+                        console.log("deleting")
+                        let index = getSubArrayIndex([''],value)
+                        value.splice(index);
+                        console.log("new val "+value)
+                        map.set(key, value)
+                        //console.log(value)
+                    }
+                    updateRules(key, map);
+                }
+            }
+        }
+    }
+    return map;
 }
 
+function getSubArrayIndex(subarray, arr){
+    let string = subarray.toString();
+    for (let i=0; i<arr.length; i++){
+        if (arr[i].toString() == string){
+            console.log("Index to delete "+ i)
+            return i
+        }
+    }
+    return -1; // not found
+}
 
 
 
 let map = new Map();
 let additional_rules = new Map();
-map.set('S', [['a', 'S', 'b'], ['']]);
+map.set('S', [['1', 'S', '1'], ['0','S','0'],['']]);
 let start = 'S';
 let count = 0;
 
@@ -79,4 +150,9 @@ console.log("Start rule");
 console.log(map);
 [count, map, additional_rules] = applyBinRule(map, additional_rules, count);
 console.log("Bin rule");
+console.log(map);
+
+console.log("DEL");
+map = applyDelRule(map,start);
+
 console.log(map);
