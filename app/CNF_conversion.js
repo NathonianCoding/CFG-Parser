@@ -1,5 +1,4 @@
-﻿
-function applyStartRule(map, additional_rules, start, count){
+﻿function applyStartRule(map, additional_rules, start, count){
     for ([Key, value] of map){
         for (production of value){
             for (variable of production){
@@ -50,6 +49,23 @@ function applyBinRule(map, additional_rules, count){
     }
     return [count, map, additional_rules];
 }
+
+function DelRuleSatisfied(map, start){
+    for ([key, value] of map){
+        for (production of value){
+            if (production == [''] && key!=start){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function applyDelRule(map, start){
+    while (!DelRuleSatisfied(map, start)){}
+}
+
+
 
 
 let map = new Map();

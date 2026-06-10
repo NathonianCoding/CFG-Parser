@@ -58,7 +58,7 @@ export function checkInCNF(cfg, start){
             console.log("Prod rule: "+ array.join(''))
             let symbol = array.join(''); //combines individual terminal/non-terminal variables to a single variable
             console.log("Array: "+ array.toString())
-            if (!(checkStart(start, array) && checkProductionLength(array) && checkEpsilon(start, array, key) && checkUnitRule(symbol) && checkTerm(array))){
+            if (!(checkStart(start, array) && checkProductionLength(array) && checkEpsilon(start, symbol, key) && checkUnitRule(symbol) && checkTerm(array))){
                 
                 return false;
             }
@@ -90,14 +90,14 @@ function checkProductionLength(array){
 
 }
 
-function checkEpsilon(start, array, key){
-    for (let symbol of array){
-        if (symbol == '' && start!=key){
-            console.log("Failed Epsilon: "+ start + ", " + symbol + "Key " + key);
-            return false;
-        }
-
+function checkEpsilon(start, symbol, key){
+   
+    if (symbol == '' && start!=key){
+        console.log("Failed Epsilon: "+ start + ", " + symbol + "Key " + key);
+        return false;
     }
+
+    
     
     return true;
 }
