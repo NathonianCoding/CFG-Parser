@@ -209,10 +209,12 @@ function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
         let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
         
         let complete = cfgComplete(cfgHashMap);
-        if (!complete){
+        let noRedundantRules = hasNoRedundantRules(cfgHashMap);
+        if (!complete || !noRedundantRules){
             e.preventDefault();
+            
         }
-        setValid(complete); // changes validity of cfg after checking if it's complete
+        setValid(complete && noRedundantRules); 
         
         let isInCNF = checkInCNF(cfgHashMap, startVar) 
 
@@ -251,3 +253,15 @@ function cfgComplete(cfg){
     return true;
 }
 
+function hasNoRedundantRules(cfg){
+    for(let [key, value] of cfg){
+        for (let production of value){
+            // checks there is noo rule like S->S as this is redundant
+            if (production.toString() == key){
+                console.log("Redundant rule");
+                return false;
+            }
+        }
+    }
+    return true
+}

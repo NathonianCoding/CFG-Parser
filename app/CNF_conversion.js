@@ -1,7 +1,7 @@
 ﻿function applyStartRule(map, additional_rules, start, count){
-    for ([Key, value] of map){
-        for (production of value){
-            for (variable of production){
+    for (let [Key, value] of map){
+        for (let production of value){
+            for (let variable of production){
                 if (variable == start){
                     // create new start variable
                     let newStart = 'V'+count;
@@ -24,7 +24,7 @@
 }
 
 function applyBinRule(map, additional_rules, count){
-    for ([key, value] of map){
+    for (let [key, value] of map){
         for (let i=0; i<value.length; i++){
             production = value[i];
             while (production.length>2){
@@ -54,8 +54,8 @@ function applyBinRule(map, additional_rules, count){
 function DelRuleSatisfied(map, start){
     console.log(map)
     
-    for ([key, value] of map){
-        for (production of value){
+    for (let [key, value] of map){
+        for (let production of value){
             
             if (production.toString() == '' && key!=start){
                
@@ -69,7 +69,7 @@ function DelRuleSatisfied(map, start){
 // returns true if a subarray is in a 2d array flase otherwise
 function subarrayInArray(item, arr){
     let string = item.toString();
-    for (element of arr){
+    for (let element of arr){
         if (element.toString() == string){
             return true;
         }
@@ -79,8 +79,8 @@ function subarrayInArray(item, arr){
 // updates rest of CFG after removing an epsilon production
 function updateRules(updatedKey, map){
 
-    for ([key,value] of map){
-        for (production of value){
+    for (let [key,value] of map){
+        for (let production of value){
             for (let i=0; i<production.length; i++){
                 if (production[i] == updatedKey){
                     newProduction = production.slice(0,i).concat(production.slice(i+1));
@@ -105,7 +105,7 @@ function applyDelRule(map, start){
    
     while (!DelRuleSatisfied(map, start)){
      
-        for ([key, value] of map){
+        for (let [key, value] of map){
             if (key!=start){
                 
                 if (subarrayInArray([''], value)){
