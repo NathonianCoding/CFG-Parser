@@ -115,7 +115,7 @@ function applyDelRule(map, start){
                         console.log(value)
                         console.log("deleting")
                         let index = getSubArrayIndex([''],value)
-                        value.splice(index);
+                        value.splice(index,1);
                         console.log("new val "+value)
                         map.set(key, value)
                         //console.log(value)
@@ -128,7 +128,7 @@ function applyDelRule(map, start){
     return map;
 }
 
-// returns index of subarray in a 2d array
+// returns index of first instance of a subarray in a 2d array
 function getSubArrayIndex(subarray, arr){
     let string = subarray.toString();
     for (let i=0; i<arr.length; i++){
@@ -140,7 +140,47 @@ function getSubArrayIndex(subarray, arr){
     return -1; // not found
 }
 
+// returns true if no unit rule exists, false otherwise
+function hasUnitRule(map){
+    for (let [key, value] of map){
+        for (let production of value){
+            if (production.length == 1 && /^([A-Z]|[A-Z][0-9]*)$/.test(production[0])){
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
+// Removed unit rules
+function applyUnitRule(map){
+    while (hasUnitRule(map)){
+        for (let [key, value] of map){
+            let vars = []
+            for (let production of value){
+                // if production is a single non-terminal
+                if (production.length == 1 && /^([A-Z]|[A-Z][0-9]*)$/.test(production[0])){
+                    vars = vars.concat(production);
+                }
+            }
+
+            for (let variable of vars){
+                value.splice(getSubArrayIndex(variable, value),1);
+                // If non-terminal is same as thekey is can be deleted without replacement
+                if (variable[0] != key){ 
+                    
+                    value = value.concat(map.get(variable[0]));
+                    
+                    map.set(key, value);
+                }
+                
+            }
+        }
+
+    }
+    
+    return map;
+}
 
 let map = new Map();
 let additional_rules = new Map();
@@ -158,4 +198,6 @@ console.log(map);
 console.log("DEL");
 map = applyDelRule(map,start);
 
+console.log("UNIT");
+map = applyUnitRule(map);
 console.log(map);
