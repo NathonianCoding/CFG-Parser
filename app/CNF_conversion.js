@@ -28,9 +28,10 @@ function applyBinRule(map, additional_rules, count){
         for (let i=0; i<value.length; i++){
             production = value[i];
             while (production.length>2){
-                let vars = production.slice(0,2);
-                if (additional_rules.has(vars.toString())){
-                    production=[additional_rules.get(vars.toString())].concat(production.slice(2));
+                let vars = production.slice(0,2).toString();
+                
+                if (additional_rules.has(vars)){
+                    production=[additional_rules.get(vars)].concat(production.slice(2));
                 }
                 else{
                     let newVar = 'V'+count;
@@ -40,8 +41,10 @@ function applyBinRule(map, additional_rules, count){
                         count++
                     }
                     production=[newVar].concat(production.slice(2));
-                    additional_rules.set(vars.toString(), newVar);
-                    map.set(newVar, [vars]);
+                    additional_rules.set(vars, newVar);
+                    map.set(newVar, [vars.split(',')]);
+                    
+                    
                 }
             }
             value[i] = production; // updates rule in CFG
