@@ -12,7 +12,7 @@
                     }
 
                     map.set(newStart, [[start]])
-                    additional_rules.set([start], newStart)
+                    additional_rules.set(start, newStart)
                     return [newStart,count,map,additional_rules];
 
                 }
@@ -29,8 +29,8 @@ function applyBinRule(map, additional_rules, count){
             production = value[i];
             while (production.length>2){
                 let vars = production.slice(0,2);
-                if (additional_rules.has(vars)){
-                    production=[additional_rules.get(vars)].concat(production.slice(2));
+                if (additional_rules.has(vars.toString())){
+                    production=[additional_rules.get(vars.toString())].concat(production.slice(2));
                 }
                 else{
                     let newVar = 'V'+count;
@@ -40,7 +40,7 @@ function applyBinRule(map, additional_rules, count){
                         count++
                     }
                     production=[newVar].concat(production.slice(2));
-                    additional_rules.set(vars, newVar);
+                    additional_rules.set(vars.toString(), newVar);
                     map.set(newVar, [vars]);
                 }
             }
@@ -182,9 +182,44 @@ function applyUnitRule(map){
     return map;
 }
 
+// Ensures that productions with more than 1 character only consist of non-terminals
+function applyTermRule(map, additional_rules, count){
+    for (let [key, value] of map){
+        for (let production of value){
+            if (production.length > 1){
+                for (let i =0; i<production.length; i++){
+                    if (/^[a-z0-9]$/.test(production[i])){
+                        let symbol = production[i]
+                        console.log("Symbol");
+                        console.log([symbol]);
+                        if (additional_rules.has(symbol)){
+                            console.log(true);
+                            production[i] = additional_rules.get(symbol);
+                        }
+                        else{
+                            let newVar = 'V'+count;
+                            count++
+                            while (map.has(newVar)){
+                                newVar = 'V'+count;
+                                count++;
+                            }
+
+                            production[i] = newVar;
+                            additional_rules.set([symbol].toString(), newVar);
+                            map.set(newVar, [[symbol]])
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return [map, additional_rules, count];
+}
+
+
 let map = new Map();
 let additional_rules = new Map();
-map.set('S', [['1', 'S', '1'], ['0','S','0'],['']]);
+map.set('S', [['a', 'a', 'a', 'S'], ['a','a','b'],['b']]);
 let start = 'S';
 let count = 0;
 
@@ -201,3 +236,8 @@ map = applyDelRule(map,start);
 console.log("UNIT");
 map = applyUnitRule(map);
 console.log(map);
+
+console.log("TERM");
+[map, additional_rules, count] = applyTermRule(map, additional_rules, count);
+console.log(map);
+console.log(additional_rules)
