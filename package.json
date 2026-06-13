@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "next dev"
+    "dev": "next dev",
+    "build":"next build"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
