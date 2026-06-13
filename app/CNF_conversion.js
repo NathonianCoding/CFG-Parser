@@ -26,7 +26,7 @@
 function applyBinRule(map, additional_rules, count){
     for (let [key, value] of map){
         for (let i=0; i<value.length; i++){
-            production = value[i];
+            let production = value[i];
             while (production.length>2){
                 let vars = production.slice(0,2).toString();
                 
@@ -220,10 +220,8 @@ function applyTermRule(map, additional_rules, count){
 }
 
 
-let map = new Map();
-let additional_rules = new Map();
-map.set('S', [['a', 'a', 'a', 'S'], ['a','a','b'],['b']]);
-let start = 'S';
+
+
 
 export function convert_to_CNF(map, start){
     let additional_rules = new Map();
@@ -250,6 +248,5 @@ export function convert_to_CNF(map, start){
     return map;
 
 }
-let cnf = convert_to_CNF(map, start);
-console.log("In CNF");
-console.log(cnf);
+
+
