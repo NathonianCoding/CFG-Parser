@@ -224,23 +224,32 @@ let map = new Map();
 let additional_rules = new Map();
 map.set('S', [['a', 'a', 'a', 'S'], ['a','a','b'],['b']]);
 let start = 'S';
-let count = 0;
 
-console.log("Start rule");
-[start, count, map, additional_rules] = applyStartRule(map, additional_rules, start, count);
-console.log(map);
-[count, map, additional_rules] = applyBinRule(map, additional_rules, count);
-console.log("Bin rule");
-console.log(map);
+export function convert_to_CNF(map, start){
+    let additional_rules = new Map();
+    let count = 0;
 
-console.log("DEL");
-map = applyDelRule(map,start);
+    console.log("Start rule");
+    [start, count, map, additional_rules] = applyStartRule(map, additional_rules, start, count);
+    console.log(map);
+    [count, map, additional_rules] = applyBinRule(map, additional_rules, count);
+    console.log("Bin rule");
+    console.log(map);
 
-console.log("UNIT");
-map = applyUnitRule(map);
-console.log(map);
+    console.log("DEL");
+    map = applyDelRule(map,start);
 
-console.log("TERM");
-[map, additional_rules, count] = applyTermRule(map, additional_rules, count);
-console.log(map);
-console.log(additional_rules)
+    console.log("UNIT");
+    map = applyUnitRule(map);
+    console.log(map);
+
+    console.log("TERM");
+    [map, additional_rules, count] = applyTermRule(map, additional_rules, count);
+    console.log(map);
+    console.log(additional_rules)
+    return map;
+
+}
+let cnf = convert_to_CNF(map, start);
+console.log("In CNF");
+console.log(cnf);
