@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {useRef} from 'react';
 import {formatCFG, checkInCNF} from './CNF_format_check'
 import { Popover } from "@headlessui/react";
-
+import { convert_to_CNF } from './CNF_conversion';
 
 
 
@@ -88,7 +88,7 @@ export default function Form({setResult}){
 
                         <button
                             type="button"
-                            onClick={(e)=>handleConversion(e, cfg)}
+                            onClick={(e)=>handleConversion(e, cfg, cfgTextArea)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
                             Convert to CNF
@@ -187,18 +187,22 @@ function insertChar(txt, setText, textArea, char){
    
 
 }
-
-// updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
-function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
-   
-    
+// converts raw cfg string from text box into a formatted string
+function clean_cfg_string(cfg){
     let newString="";
     for(let i=0; i<cfg.length; i++){
         if (cfg.charAt(i)!=" " && cfg.charAt(i)!='\n'){
             newString+=cfg.charAt(i)
         }
     }
-    cfg=newString;
+    return newString;
+}
+// updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
+function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
+   
+    
+    
+    cfg=clean_cfg_string(cfg);
     if (!isValidCFG(cfg)){
         setValid(false);
         e.preventDefault();
@@ -225,8 +229,41 @@ function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
     }
 }
 
-function handleConversion(e, cfg){
-    e.preventDefault();
+function handleConversion(e, cfg, cfgTextArea){
+    cfg = clean_cfg_string(cfg);
+    if (isValidCFG(cfg)){
+        let cfgHashMap = formatCFG(cfg);
+        let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
+        
+        let [cfg_in_CNF, newStart] = convert_to_CNF(cfgHashMap, startVar);
+
+        // converts hashmap into a string
+        let start_rules = cfg_in_CNF.get(newStart);
+        let output = ""+newStart + ' → ' + start_rules[0].join('');
+        start_rules.shift(1);
+        
+        
+        for (let production of start_rules){
+            output+= " | " + production.join('');
+        }
+
+        cfg_in_CNF.delete(newStart);
+
+        for (let [key, value] of cfg_in_CNF){
+            let rule = ';\n'+ key + ' → ' + value[0].join('');
+            value.shift(1);
+            for (let prod of value){
+                rule += " | " + prod.join('');
+            }
+            output+=rule;
+            
+
+        }
+        cfgTextArea.current.value = output;
+
+        
+    }
+    
     
 }
 

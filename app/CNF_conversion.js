@@ -86,7 +86,7 @@ function updateRules(updatedKey, map){
         for (let production of value){
             for (let i=0; i<production.length; i++){
                 if (production[i] == updatedKey){
-                    newProduction = production.slice(0,i).concat(production.slice(i+1));
+                    let newProduction = production.slice(0,i).concat(production.slice(i+1));
                     
                     if (!subarrayInArray(newProduction, value)){
                         console.log("New Prod "+newProduction)
@@ -163,16 +163,17 @@ function applyUnitRule(map){
             for (let production of value){
                 // if production is a single non-terminal
                 if (production.length == 1 && /^([A-Z]|[A-Z][0-9]*)$/.test(production[0])){
-                    vars = vars.concat(production);
+                    vars = vars.concat(production[0]);
                 }
             }
 
             for (let variable of vars){
                 value.splice(getSubArrayIndex(variable, value),1);
                 // If non-terminal is same as thekey is can be deleted without replacement
-                if (variable[0] != key){ 
+                if (variable != key){ 
                     
-                    value = value.concat(map.get(variable[0]));
+                    value = value.concat(map.get(variable));
+                    
                     
                     map.set(key, value);
                 }
@@ -230,6 +231,7 @@ export function convert_to_CNF(map, start){
     console.log("Start rule");
     [start, count, map, additional_rules] = applyStartRule(map, additional_rules, start, count);
     console.log(map);
+    console.log(start);
     [count, map, additional_rules] = applyBinRule(map, additional_rules, count);
     console.log("Bin rule");
     console.log(map);
@@ -245,7 +247,7 @@ export function convert_to_CNF(map, start){
     [map, additional_rules, count] = applyTermRule(map, additional_rules, count);
     console.log(map);
     console.log(additional_rules)
-    return map;
+    return [map, start];
 
 }
 
