@@ -1,5 +1,5 @@
-﻿import {checkInCNF} from "../app/CNF_format_check";
-import {convert_to_CNF} from "../app/CNF_conversion";
+﻿import {checkInCNF} from "../CNF_format_check";
+import {convert_to_CNF} from "../CNF_conversion";
 import { expect, test } from 'vitest'
 
 let map1 = new Map();
