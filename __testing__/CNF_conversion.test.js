@@ -1,5 +1,5 @@
-﻿import {checkInCNF} from "../CNF_format_check";
-import {convert_to_CNF} from "../CNF_conversion";
+﻿import {checkInCNF} from "../app/CNF_format_check";
+import {convert_to_CNF} from "../app/CNF_conversion";
 import { expect, test } from 'vitest'
 
 let map1 = new Map();
@@ -7,7 +7,7 @@ map1.set('S', [['a', 'a', 'a', 'S'], ['a','a','b'],['b']]);
 
 let map2 = new Map();
 map2.set('S', [['S', 'X'], ['b']]);
-map2.set('X', [['X', 'S'], ['b']]);
+map2.set('X', [['X', 'S'], ['bgit ']]);
 
 test("S->aaS|aab|b is not in CNF", ()=>{
     expect(checkInCNF(map1, 'S')).toBe(false);
