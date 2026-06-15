@@ -1,51 +1,59 @@
-﻿import {checkInCNF} from "../app/CNF_format_check";
-import {convert_to_CNF} from "../app/CNF_conversion";
-import { expect, test } from 'vitest'
+﻿import { checkInCNF } from "../app/CNF_format_check";
+import { convert_to_CNF } from "../app/CNF_conversion";
+import { describe, expect, test } from 'vitest';
 
-let map1 = new Map();
-map1.set('S', [['a', 'a', 'a', 'S'], ['a','a','b'],['b']]);
+// Factory functions: each call returns a brand-new Map,
+// so no test can accidentally see another test's mutations.
+const makeGrammar1 = () => {
+  const map = new Map();
+  map.set('S', [['a', 'a', 'a', 'S'], ['a', 'a', 'b'], ['b']]);
+  return map;
+};
 
-let map2 = new Map();
-map2.set('S', [['S', 'X'], ['b']]);
-map2.set('X', [['X', 'S'], ['b']]);
+const makeGrammar2 = () => {
+  const map = new Map();
+  map.set('S', [['S', 'X'], ['b']]);
+  map.set('X', [['X', 'S'], ['b']]);
+  return map;
+};
 
-let map3 = new Map();
-map3.set('S0', [['S', 'X']]);
-map3.set('S', [['S', 'X'], ['b']]);
-map3.set('X', [['X', 'S'], ['b'], ['']]);
+const makeGrammar3 = () => {
+  const map = new Map();
+  map.set('S0', [['S', 'X']]);
+  map.set('S', [['S', 'X'], ['b']]);
+  map.set('X', [['X', 'S'], ['b'], ['']]);
+  return map;
+};
 
-let test1 = checkInCNF(map1, 'S');
+describe("S->aaS|aab|b", () => {
+  test("is not in CNF", () => {
+    expect(checkInCNF(makeGrammar1(), 'S')).toBe(false);
+  });
 
+  test("converts to CNF correctly", () => {
+    const [cnfMap, start] = convert_to_CNF(makeGrammar1(), 'S');
+    expect(checkInCNF(cnfMap, start)).toBe(true);
+  });
+});
 
-test("S->aaS|aab|b is not in CNF", ()=>{
-    expect(test1).toBe(false);
-})
-let [map1_in_CNF, map1_start] = convert_to_CNF(map1, 'S');
-let test2 = checkInCNF(map1_in_CNF, map1_start);
-test("S->aaS|aab|b converted to CNF", ()=>{
-    expect(test2).toBe(true);
-})
+describe("S → SX | b; X → XS | b", () => {
+  test("is not in CNF", () => {
+    expect(checkInCNF(makeGrammar2(), 'S')).toBe(false);
+  });
 
-let test3 = checkInCNF(map2, 'S'); 
-test("S → SX | b; X → XS | b is not in CNF", ()=>{
-    expect(test3).toBe(false);
-})
+  test("converts to CNF correctly", () => {
+    const [cnfMap, start] = convert_to_CNF(makeGrammar2(), 'S');
+    expect(checkInCNF(cnfMap, start)).toBe(true);
+  });
+});
 
-let [map2_in_CNF, map2_start] = convert_to_CNF(map2, 'S');
-let test4 = checkInCNF(map2_in_CNF, map2_start); 
-test("S → SX | b; X → XS | b converted to CNF", ()=>{
-    expect(test4).toBe(true);
-})
+describe("S0 → SX; S → SX | b; X → XS | b | ε", () => {
+  test("is not in CNF", () => {
+    expect(checkInCNF(makeGrammar3(), 'S0')).toBe(false);
+  });
 
-console.log("Map 3")
-let test5 = checkInCNF(map3, 'S0');
-
-test("S0 → SX; S → SX | b; X → XS | b | ε is not in CNF", ()=>{
-    expect(test5).toBe(false);
-})
-
-let [map3_in_CNF, map3_start] = convert_to_CNF(map3, 'S0'); 
-let test6 = checkInCNF(map3_in_CNF, map3_start);
-test("S0 → SX; S → SX | b; X → XS | b | ε converted to CNF", ()=>{
-    expect(test6).toBe(true);
-})
+  test("converts to CNF correctly", () => {
+    const [cnfMap, start] = convert_to_CNF(makeGrammar3(), 'S0');
+    expect(checkInCNF(cnfMap, start)).toBe(true);
+  });
+});
