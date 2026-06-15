@@ -88,7 +88,7 @@ export default function Form({setResult}){
 
                         <button
                             type="button"
-                            onClick={(e)=>handleConversion(e, cfg, cfgTextArea)}
+                            onClick={(e)=>handleConversion(e, cfg, cfgTextArea, setText)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
                             Convert to CNF
@@ -229,7 +229,7 @@ function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
     }
 }
 
-function handleConversion(e, cfg, cfgTextArea){
+function handleConversion(e, cfg, cfgTextArea, setText){
     cfg = clean_cfg_string(cfg);
     if (isValidCFG(cfg)){
         let cfgHashMap = formatCFG(cfg);
@@ -239,12 +239,19 @@ function handleConversion(e, cfg, cfgTextArea){
 
         // converts hashmap into a string
         let start_rules = cfg_in_CNF.get(newStart);
-        let output = ""+newStart + ' → ' + start_rules[0].join('');
+        let output = ""+newStart + ' → ';
+        if (start_rules[0][0] == ''){
+            output+='ε';
+        }
+        else{output+=start_rules[0].join('')}
         start_rules.shift(1);
         
         
         for (let production of start_rules){
-            output+= " | " + production.join('');
+            if (production[0] == ''){
+                output+= " | ε"
+            }
+            else{output+= " | " + production.join('');}
         }
 
         cfg_in_CNF.delete(newStart);
@@ -253,13 +260,20 @@ function handleConversion(e, cfg, cfgTextArea){
             let rule = ';\n'+ key + ' → ' + value[0].join('');
             value.shift(1);
             for (let prod of value){
-                rule += " | " + prod.join('');
+                if (prod[0] == ''){
+                    rule+= " | ε";
+                }
+                else{
+                    rule += " | " + prod.join('');
+                }
+                
             }
             output+=rule;
             
 
         }
         cfgTextArea.current.value = output;
+        setText(output);
 
         
     }
