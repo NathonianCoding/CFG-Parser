@@ -171,8 +171,14 @@ function applyUnitRule(map){
                 value.splice(getSubArrayIndex(variable, value),1);
                 // If non-terminal is same as thekey is can be deleted without replacement
                 if (variable != key){ 
+                    let productions = map.get(variable);
                     
-                    value = value.concat(map.get(variable));
+                    for (let prod of productions){
+                        // prevents duplicate productions
+                        if (!subarrayInArray(prod, value)){
+                            value = value.concat([prod]);
+                        }
+                    }
                     
                     
                     map.set(key, value);
