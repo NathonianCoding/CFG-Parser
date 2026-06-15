@@ -53,6 +53,8 @@ function getVarsList(string){
 }
 
 export function checkInCNF(cfg, start){
+    console.log("Hashmap");
+    console.log(cfg);
     for (let [key, value] of cfg){
         for (let array of value){
             console.log("array before join: ");

@@ -200,7 +200,7 @@ function clean_cfg_string(cfg){
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
 function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
    
-    
+    e.preventDefault();
     
     cfg=clean_cfg_string(cfg);
     if (!isValidCFG(cfg)){
@@ -236,7 +236,7 @@ function handleConversion(e, cfg, cfgTextArea, setText){
         let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
         
         let [cfg_in_CNF, newStart] = convert_to_CNF(cfgHashMap, startVar);
-
+        console.log("New start: "+ newStart);
         // converts hashmap into a string
         let start_rules = cfg_in_CNF.get(newStart);
         let output = ""+newStart + ' → ';
