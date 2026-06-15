@@ -55,8 +55,9 @@ function getVarsList(string){
 export function checkInCNF(cfg, start){
     for (let [key, value] of cfg){
         for (let array of value){
-            console.log("Prod rule: "+ array.join(''))
+            
             let symbol = array.join(''); //combines individual terminal/non-terminal variables to a single variable
+            console.log("Prod rule: "+ symbol);
             console.log("Array: "+ array.toString())
             if (!(checkStart(start, array) && checkProductionLength(array) && checkEpsilon(start, symbol, key) && checkUnitRule(symbol) && checkTerm(array))){
                 
