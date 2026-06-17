@@ -88,7 +88,7 @@ export default function Form({setResult}){
 
                         <button
                             type="button"
-                            onClick={(e)=>handleConversion(e, cfg, cfgTextArea, setText)}
+                            onClick={async (e)=>handleConversion(e, cfg, cfgTextArea, setText)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
                             Convert to CNF
@@ -126,6 +126,7 @@ function WordEntryBox({word, wordTextArea, setWord}){
 }
 
 function ErrorMessage({validCFG, inCNF}){
+    
     if (validCFG && !inCNF){
         
         return <p className='text-xs text-red-900'>CFG not in CNF. Press 'Convert to CNF' to parse the word</p>;
@@ -198,10 +199,14 @@ function clean_cfg_string(cfg){
     return newString;
 }
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
-function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
-   
-    e.preventDefault();
+async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
     
+    // const start = Date.now();
+    // while (Date.now() - start < 5000) {
+    //     // spin for 5 seconds — page is totally unresponsive
+    // }
+    console.log("Word: ");
+    console.log(word=="");
     cfg=clean_cfg_string(cfg);
     if (!isValidCFG(cfg)){
         setValid(false);
@@ -213,6 +218,7 @@ function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
         let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
         
         let complete = cfgComplete(cfgHashMap);
+        
         let noRedundantRules = hasNoRedundantRules(cfgHashMap);
         if (!complete || !noRedundantRules){
             e.preventDefault();
@@ -226,6 +232,7 @@ function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
             e.preventDefault();
         }
         setInCNF(isInCNF);
+        
     }
 }
 
