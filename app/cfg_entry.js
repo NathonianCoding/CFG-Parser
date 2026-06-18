@@ -4,7 +4,7 @@ import {useRef} from 'react';
 import {formatCFG, checkInCNF} from './CNF_format_check'
 import { Popover } from "@headlessui/react";
 import { convert_to_CNF } from './CNF_conversion';
-
+import { CYK } from './CYK';
 
 
 export default function Form({setResult}){
@@ -200,12 +200,14 @@ function clean_cfg_string(cfg){
 }
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
 async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
-    
+    e.preventDefault();
     // const start = Date.now();
     // while (Date.now() - start < 5000) {
     //     // spin for 5 seconds — page is totally unresponsive
     // }
-    console.log("Word: ");
+    word=word.replaceAll("ε", "");
+
+    console.log("Word: "+word);
     console.log(word=="");
     cfg=clean_cfg_string(cfg);
     if (!isValidCFG(cfg)){
@@ -231,7 +233,15 @@ async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
         if (!isInCNF){
             e.preventDefault();
         }
+    
         setInCNF(isInCNF);
+
+        if (isInCNF){
+            let [cyk_grid, inLanguage] = CYK(cfgHashMap, word, startVar);
+            console.log("Is in language: "+inLanguage);
+            console.log(cyk_grid);
+            
+        }
         
     }
 }
@@ -323,3 +333,5 @@ function hasNoRedundantRules(cfg){
     }
     return true
 }
+
+
