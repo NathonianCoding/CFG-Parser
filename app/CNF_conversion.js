@@ -106,28 +106,10 @@ function updateRules(updatedKey, map){
 }
 function applyDelRule(map, start){
    
-    while (!DelRuleSatisfied(map, start)){
-     
-        for (let [key, value] of map){
-            if (key!=start){
-                
-                if (subarrayInArray([''], value)){
-                    
-                   
-                    while (subarrayInArray([''], value)){
-                        console.log(value)
-                        console.log("deleting")
-                        let index = getSubArrayIndex([''],value)
-                        value.splice(index,1);
-                        console.log("new val "+value)
-                        map.set(key, value)
-                        //console.log(value)
-                    }
-                    updateRules(key, map);
-                }
-            }
-        }
-    }
+    let nullables = getNullables(map);
+    console.log(nullables);
+    map = modifyProductions(map, nullables, start)
+    console.log(map)
     return map;
 }
 
@@ -257,4 +239,84 @@ export function convert_to_CNF(map, start){
 
 }
 
+// Modifies productions to remove epsilon from variables other than start variable
+function modifyProductions(map, nullables, start){
+    for (let [key, value] of map){
+        for (let production of value){
+            for (let i=0; i<production.length; i++){
+                if (nullables.includes(production[i])){
+                    let newProduction = production.slice(0,i).concat(production.slice(i+1));
+                    
+                    if (!subarrayInArray(newProduction, value)){
+                        console.log("New Prod "+newProduction)
+                        if (newProduction.toString() == [].toString()){
+                            newProduction = [''];
+                        }
+                        value = value.concat([newProduction])
+                        console.log("New value")
+                        console.log(value)
+                        map.set(key, value)
+                        console.log(map)
+                    }
+                }
+            }
+        }
+    }
+    
+    // removes epsilon transition from non-start 
+    for (let [key, value] of map){
+        if (key!=start){
+            while (subarrayInArray([''], value)){
+                let index = getSubArrayIndex([''],value)
+                value.splice(index,1);
+                console.log("new val "+value)
+                map.set(key, value)
+            }
+        }
+    }
+    return map;
+}
+
+// returns a list of nullable variables
+function getNullables(map){
+    let res = []
+    
+    for (let [key, value] of map){
+        if (isNullable(key, map, [])){
+            res.push(key)
+        }
+    }
+    
+    return res;
+}
+
+// returns true if a variable is nullable, false otherwise
+function isNullable(key, map, visited){
+    visited.push(key)
+   
+    console.log("Is Nullable");
+    console.log(key);
+    
+    if (!map.has(key)){return false;}
+    if (subarrayInArray([''], map.get(key))){
+        return true;
+    }
+    
+    
+    for (let production of map.get(key)){
+        let res = true;
+        for (let symbol of production){
+            // prevents infinte loop when symbol is equal to the 
+            if (!visited.includes(symbol)){
+                res = res &&isNullable(symbol, map, visited)
+
+            }
+        }
+        if (res){
+            return true
+        }
+        
+    }
+    return false
+}
 

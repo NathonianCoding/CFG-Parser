@@ -2,20 +2,22 @@
 import {useState} from 'react';
 
 
-export default function Results({results}){
+export default function Results({result}){
+    console.log("Result")
+    console.log(result);
     let [diagram, setDiagram] = useState(0); // 0 means display CYK grid 1 means displays parse tree
     return (
         <section id="results" className="bg-slate-100 h-96">
             <DiagramButtons diagram = {diagram} setDiagram={setDiagram}/>
             <div className="border border-dashed border-black-300">
-              <Diagram diagram = {diagram} results = {results}/>  
+              <Diagram diagram = {diagram} result = {result}/>  
             </div>
         </section>
     );
 }
 
-function Diagram({diagram, results}){
-    if (results == null){
+function Diagram({diagram, result}){
+    if (result == null){
         if (diagram == 0){
             return <p className="text-center m-2">CYK grid will be displayed here after the form is processed</p>
         }

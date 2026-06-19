@@ -6,6 +6,7 @@ import Results from "./result_rendering"
 export default function HomePage() {
   let [result, setResult] = useState(null);
   
+  
 
 
   return (
@@ -13,7 +14,7 @@ export default function HomePage() {
      
     <LandingPage/>
     <Form setResult = {setResult}/>
-    <Results resuult = {result}/>
+    <Results result = {result}/>
     </>
   );
 }
