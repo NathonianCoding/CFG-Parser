@@ -237,10 +237,10 @@ async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
         setInCNF(isInCNF);
 
         if (isInCNF){
-            let [cyk_grid, inLanguage] = CYK(cfgHashMap, word, startVar);
+            let [cyk_grid, inLanguage, root] = CYK(cfgHashMap, word, startVar);
             console.log("Is in language: "+inLanguage);
             console.log(cyk_grid);
-            setResult([cyk_grid, inLanguage]);
+            setResult([cyk_grid, inLanguage, root]);
             
         }
         

@@ -25,17 +25,19 @@ export function CYK(cfg, word, start) {
     }
     populateGrid(CYK_grid, cfg, word);
     console.log(CYK_grid);
+    let root = null;
     let inLanguage = false;
      for (let node of CYK_grid[Math.max(0,word.length-1)][0]){
         
         if (node.val == start){
             inLanguage = true;
+            root = node;
         }
             
         
     }
     
-    return [CYK_grid, inLanguage];
+    return [CYK_grid, inLanguage, root];
 }
 
 // Initiates the CYK algorithm
