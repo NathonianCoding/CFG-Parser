@@ -53,21 +53,7 @@ function applyBinRule(map, additional_rules, count){
     return [count, map, additional_rules];
 }
 
-// returns true if epsilons only appear in the start variable rule, false otherwise
-function DelRuleSatisfied(map, start){
-    console.log(map)
-    
-    for (let [key, value] of map){
-        for (let production of value){
-            
-            if (production.toString() == '' && key!=start){
-               
-                return false;
-            }
-        }
-    }
-    return true;
-}
+
 
 // returns true if a subarray is in a 2d array flase otherwise
 function subarrayInArray(item, arr){
@@ -79,31 +65,8 @@ function subarrayInArray(item, arr){
     }
     return false;
 }
-// updates rest of CFG after removing an epsilon production
-function updateRules(updatedKey, map){
 
-    for (let [key,value] of map){
-        for (let production of value){
-            for (let i=0; i<production.length; i++){
-                if (production[i] == updatedKey){
-                    let newProduction = production.slice(0,i).concat(production.slice(i+1));
-                    
-                    if (!subarrayInArray(newProduction, value)){
-                        console.log("New Prod "+newProduction)
-                        if (newProduction.toString() == [].toString()){
-                            newProduction = [''];
-                        }
-                        value = value.concat([newProduction])
-                        console.log("New value")
-                        console.log(value)
-                        map.set(key, value)
-                    }
-                }
-            }
-        }
-
-    }
-}
+// returns updated hashmap of the CFG after removing epsilon productions from nullables other than the start variable
 function applyDelRule(map, start){
    
     let nullables = getNullables(map);
