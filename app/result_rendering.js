@@ -1,6 +1,40 @@
 ﻿'use client';
 import {useState} from 'react';
+import Tree from 'react-d3-tree';
 
+// This is a simplified example of an org chart with a depth of 2.
+// Note how deeper levels are defined recursively via the `children` property.
+const orgChart = {
+  name: 'CEO',
+  children: [
+    {
+      name: 'Manager',
+      
+      children: [
+        {
+          name: 'Foreman',
+          
+          children: [
+            {
+              name: 'Worker',
+              children: [],
+            },
+          ],
+        },
+        {
+          name: 'Foreman',
+          
+          children: [
+            {
+              name: 'Worker',
+              children:[],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
 
 export default function Results({result}){
     console.log("Result")
@@ -17,6 +51,12 @@ export default function Results({result}){
 }
 
 function Diagram({diagram, result}){
+    const straightPathFunc = (linkDatum, orientation) => {
+    const { source, target } = linkDatum;
+    return orientation === 'vertical'
+      ? `M${source.y},${source.x}L${target.y},${target.x}`
+      : `M${source.x},${source.y}L${target.x},${target.y}`;
+  };
     if (result == null){
         if (diagram == 0){
             return <p className="text-center m-2">CYK grid will be displayed here after the form is processed</p>
@@ -27,6 +67,19 @@ function Diagram({diagram, result}){
     }
     else{
         // render diagram
+        if (diagram == 1){
+            if (result[1] == true){
+            console.log(result[2])
+            return <Tree data={result[2]} orientation='vertical'/>
+  
+            }
+            else{
+                return <Tree data={orgChart} orientation='vertical'/>
+
+            }
+        }
+        
+        
     }
 }
 

@@ -1,6 +1,6 @@
 ﻿class Node {
-    constructor(val) {
-        this.val = val;
+    constructor(name) {
+        this.name = name;
         this.children = [];
     }
 }
@@ -29,7 +29,7 @@ export function CYK(cfg, word, start) {
     let inLanguage = false;
      for (let node of CYK_grid[Math.max(0,word.length-1)][0]){
         
-        if (node.val == start){
+        if (node.name == start){
             inLanguage = true;
             root = node;
         }
@@ -90,9 +90,9 @@ function searchRules(cfg, var1, var2 = null) {
     let queryString;
 
     if (var2 === null) {
-        queryString = String(var1.val);
+        queryString = String(var1.name);
     } else {
-        queryString = String(var1.val) + String(var2.val);
+        queryString = String(var1.name) + String(var2.name);
     }
     
 
