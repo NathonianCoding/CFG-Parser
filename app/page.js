@@ -13,6 +13,7 @@ export default function HomePage() {
 
   return (
     <>
+    <Header/>
      
     <LandingPage/>
     <Form setResult = {setResult} resultsPanel={resultsPanel}/>
@@ -28,13 +29,7 @@ function LandingPage(){
  
   return (
     <div id="landingPage" className="min-h-screen bg-slate-50 flex flex-col">
-      <nav className="sticky inset-0 bg-slate-900 px-8 py-4 flex items-center justify-between shadow-lg">
-        <span className="text-white text-xl font-semibold tracking-tight">CFG Parser</span>
-        <div className="flex gap-6">
-          <a href="#landingPage" className="text-slate-300 hover:text-white text-sm font-medium transition-colors duration-200">Home</a>
-          <a href="#parser" className="text-slate-300 hover:text-white text-sm font-medium transition-colors duration-200">Parser</a>
-        </div>
-      </nav>
+      
 
       <main className="flex-1 flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-lg">
@@ -48,6 +43,18 @@ function LandingPage(){
       </main>
     
     </div>
+  );
+}
+
+function Header(){
+  return (
+    <nav className="sticky inset-0 bg-slate-900 px-8 py-4 flex items-center justify-between shadow-lg">
+        <span className="text-white text-xl font-semibold tracking-tight">CFG Parser</span>
+        <div className="flex gap-6">
+          <a href="#landingPage" className="text-slate-300 hover:text-white text-sm font-medium transition-colors duration-200">Home</a>
+          <a href="#parser" className="text-slate-300 hover:text-white text-sm font-medium transition-colors duration-200">Parser</a>
+        </div>
+    </nav>
   );
 }
 

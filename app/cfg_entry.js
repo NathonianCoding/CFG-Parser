@@ -20,7 +20,7 @@ export default function Form({setResult, resultsPanel}){
     let [inCNF, setInCNF] = useState(true);
     return (
 
-        <form className="bg-white rounded-2xl shadow-xl shadow-slate-200 border border-slate-100 p-8 flex flex-col gap-6">
+        <form id='parser' className="bg-white rounded-2xl shadow-xl shadow-slate-200 border border-slate-100 p-8 flex flex-col gap-6">
             <fieldset>
 
                     {/* Word input */}
