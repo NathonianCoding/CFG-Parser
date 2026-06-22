@@ -183,10 +183,10 @@ describe('CYK returns true', () => {
     expect(accepts(cfgFirstLastMatch(), 'aba')).toBe(true);
   });
  
-  it('CYK returns a 2-element array', () => {
+  it('CYK returns a 3-element array', () => {
     const result = CYK(cfgSingleA(), 'a', 'S');
     expect(Array.isArray(result)).toBe(true);
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(3);
   });
  
   it('CYK grid has correct row count for word of length 3', () => {
