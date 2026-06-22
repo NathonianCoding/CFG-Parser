@@ -55,15 +55,18 @@ function Diagram({diagram, result}){
     }
     else{
         // render diagram
-        if (diagram == 1){
+        if (diagram == 0){
+            console.log("grid");
+            return <CYKgrid grid={result[0]}/>
+        }
+        else{
             if (result[1] == true){
             console.log(result[2])
             return <Tree data={result[2]} orientation='vertical' pathFunc={straightPathFunc} renderCustomNodeElement={renderCustomNode} collapsible={false}/>
   
             }
             else{
-                return <Tree data={orgChart} orientation='vertical' pathFunc={straightPathFunc} renderCustomNodeElement={renderCustomNode} collapsible={false}/>
-
+                return <p className="text-center m-2">The word entered cannot be derived from the CFG</p>
             }
         }
         
@@ -109,5 +112,33 @@ function DiagramButtons({diagram, setDiagram}){
         </div>
     );
     
+
+}
+
+function CYKgrid({grid}){
+    
+   return (
+
+    <table className='ml-auto mr-auto mt-2'>
+        <tbody>
+        {grid.map((row, rowIdx) => {
+            return (
+                <tr key={rowIdx}>
+                {row.map((cell, colIdx) => {
+                    return (
+                    <td key={colIdx} className='p-2 border border-black'>
+                        {cell.length === 0 ? "-" : cell.join(", ")}
+                    </td>
+                    );
+                })}
+                </tr>
+            );
+        })}
+        </tbody>
+    </table>
+
+  
+
+    );
 
 }

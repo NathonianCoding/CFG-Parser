@@ -27,7 +27,8 @@ export function CYK(cfg, word, start) {
     console.log(CYK_grid);
     let root = null;
     let inLanguage = false;
-     for (let node of CYK_grid[Math.max(0,word.length-1)][0]){
+    // obtains root and checks if the word was in the language
+    for (let node of CYK_grid[Math.max(0,word.length-1)][0]){
         
         if (node.name == start){
             inLanguage = true;
@@ -35,6 +36,15 @@ export function CYK(cfg, word, start) {
         }
             
         
+    }
+
+    CYK_grid.reverse();
+    for (let i=0; i<CYK_grid.length; i++){
+        for (let j = 0; j<CYK_grid[i].length; j++){
+            for (let k=0; k<CYK_grid[i][j].length; k++){
+                CYK_grid[i][j][k] = CYK_grid[i][j][k].name;
+            }
+        }
     }
     
     return [CYK_grid, inLanguage, root];
