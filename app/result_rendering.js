@@ -2,39 +2,8 @@
 import {useState} from 'react';
 import Tree from 'react-d3-tree';
 
-// This is a simplified example of an org chart with a depth of 2.
-// Note how deeper levels are defined recursively via the `children` property.
-const orgChart = {
-  name: 'CEO',
-  children: [
-    {
-      name: 'Manager',
-      
-      children: [
-        {
-          name: 'Foreman',
-          
-          children: [
-            {
-              name: 'Worker',
-              children: [],
-            },
-          ],
-        },
-        {
-          name: 'Foreman',
-          
-          children: [
-            {
-              name: 'Worker',
-              children:[],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
+
+
 
 export default function Results({result}){
     console.log("Result")
@@ -43,7 +12,7 @@ export default function Results({result}){
     return (
         <section id="results" className="bg-slate-100 h-96">
             <DiagramButtons diagram = {diagram} setDiagram={setDiagram}/>
-            <div className="border border-dashed border-black-300">
+            <div className="h-90 border border-dashed border-black-300">
               <Diagram diagram = {diagram} result = {result}/>  
             </div>
         </section>
@@ -51,12 +20,31 @@ export default function Results({result}){
 }
 
 function Diagram({diagram, result}){
-    const straightPathFunc = (linkDatum, orientation) => {
-    const { source, target } = linkDatum;
-    return orientation === 'vertical'
-      ? `M${source.y},${source.x}L${target.y},${target.x}`
-      : `M${source.x},${source.y}L${target.x},${target.y}`;
-  };
+    // ensures edges are straight lines and edges to leaf nodes don't go passed the edge
+    let straightPathFunc = (linkDatum, orientation) => {
+        const { source, target } = linkDatum;
+        return orientation === 'horizontal'
+        ? `M${source.y},${source.x}L${target.y-15},${target.x}`
+        : `M${source.x},${source.y}L${target.x},${target.y-15}`;
+    };
+
+    // defines the radius of each node and the positioning of the label
+    let renderCustomNode = ({ nodeDatum, toggleNode }) => {
+        
+        if (nodeDatum.name == ''){
+            nodeDatum.name ='ε';
+        }
+       
+        return (
+            <g>
+                <circle r={15} />
+                <text x={20}>
+                    {nodeDatum.name}
+                </text>
+            </g>
+        );
+    };
+
     if (result == null){
         if (diagram == 0){
             return <p className="text-center m-2">CYK grid will be displayed here after the form is processed</p>
@@ -70,11 +58,11 @@ function Diagram({diagram, result}){
         if (diagram == 1){
             if (result[1] == true){
             console.log(result[2])
-            return <Tree data={result[2]} orientation='vertical'/>
+            return <Tree data={result[2]} orientation='vertical' pathFunc={straightPathFunc} renderCustomNodeElement={renderCustomNode} collapsible={false}/>
   
             }
             else{
-                return <Tree data={orgChart} orientation='vertical'/>
+                return <Tree data={orgChart} orientation='vertical' pathFunc={straightPathFunc} renderCustomNodeElement={renderCustomNode} collapsible={false}/>
 
             }
         }
