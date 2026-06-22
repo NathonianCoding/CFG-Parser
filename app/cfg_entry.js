@@ -7,7 +7,7 @@ import { convert_to_CNF } from './CNF_conversion';
 import { CYK } from './CYK';
 
 
-export default function Form({setResult}){
+export default function Form({setResult, resultsPanel}){
   
 
     let [cfg, setText] = useState("");
@@ -20,7 +20,7 @@ export default function Form({setResult}){
     let [inCNF, setInCNF] = useState(true);
     return (
 
-        <form action = "#results" id="parser" className="bg-white rounded-2xl shadow-xl shadow-slate-200 border border-slate-100 p-8 flex flex-col gap-6">
+        <form className="bg-white rounded-2xl shadow-xl shadow-slate-200 border border-slate-100 p-8 flex flex-col gap-6">
             <fieldset>
 
                     {/* Word input */}
@@ -96,7 +96,7 @@ export default function Form({setResult}){
 
                         <button
                             type="submit"
-                            onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF, setResult)}
+                            onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
                             Parse
@@ -199,12 +199,9 @@ function clean_cfg_string(cfg){
     return newString;
 }
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
-async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
-    e.preventDefault();
-    // const start = Date.now();
-    // while (Date.now() - start < 5000) {
-    //     // spin for 5 seconds — page is totally unresponsive
-    // }
+async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel){
+  
+    e.preventDefault()
     word=word.replaceAll("ε", "");
 
     console.log("Word: "+word);
@@ -212,7 +209,7 @@ async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
     cfg=clean_cfg_string(cfg);
     if (!isValidCFG(cfg)){
         setValid(false);
-        e.preventDefault();
+        
 
     }
     else{
@@ -223,7 +220,7 @@ async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
         
         let noRedundantRules = hasNoRedundantRules(cfgHashMap);
         if (!complete || !noRedundantRules){
-            e.preventDefault();
+            
             
         }
         setValid(complete && noRedundantRules); 
@@ -231,7 +228,7 @@ async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
         let isInCNF = checkInCNF(cfgHashMap, startVar) 
 
         if (!isInCNF){
-            e.preventDefault();
+        
         }
     
         setInCNF(isInCNF);
@@ -240,7 +237,10 @@ async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult){
             let [cyk_grid, inLanguage, root] = CYK(cfgHashMap, word, startVar);
             console.log("Is in language: "+inLanguage);
             console.log(cyk_grid);
+           
             setResult([cyk_grid, inLanguage, root]);
+            console.log(resultsPanel)
+            resultsPanel.current.scrollIntoView()
             
         }
         

@@ -5,12 +5,12 @@ import Tree from 'react-d3-tree';
 
 
 
-export default function Results({result}){
+export default function Results({resultsPanel, result}){
     console.log("Result")
     console.log(result);
     let [diagram, setDiagram] = useState(0); // 0 means display CYK grid 1 means displays parse tree
     return (
-        <section id="results" className="bg-slate-100 h-96">
+        <section ref = {resultsPanel} id="results" className="bg-slate-100 h-96">
             <DiagramButtons diagram = {diagram} setDiagram={setDiagram}/>
             <div className="h-90 border border-dashed border-black-300">
               <Diagram diagram = {diagram} result = {result}/>  
