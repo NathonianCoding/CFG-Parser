@@ -57,7 +57,7 @@ function Diagram({diagram, result}){
         // render diagram
         if (diagram == 0){
             console.log("grid");
-            return <CYKgrid grid={result[0]}/>
+            return <CYKgrid grid={result[0]} word = {result[3]}/>
         }
         else{
             if (result[1] == true){
@@ -115,7 +115,12 @@ function DiagramButtons({diagram, setDiagram}){
 
 }
 
-function CYKgrid({grid}){
+function CYKgrid({grid, word}){
+    if (word == ''){
+        word = 'ε';
+    }
+    let word_as_array = word.split("");
+    console.log(word_as_array) 
     
    return (
 
@@ -124,6 +129,7 @@ function CYKgrid({grid}){
         {grid.map((row, rowIdx) => {
             return (
                 <tr key={rowIdx}>
+                <th scope='col'>{grid.length-rowIdx}</th>
                 {row.map((cell, colIdx) => {
                     return (
                     <td key={colIdx} className='p-2 border border-black'>
@@ -134,6 +140,15 @@ function CYKgrid({grid}){
                 </tr>
             );
         })}
+
+        <tr>
+            <td></td>
+            {word_as_array.map((letter, idx)=>(
+                <td key = {idx} className='text-center'>
+                    {letter}
+                </td>
+            ))}
+        </tr>
         </tbody>
     </table>
 

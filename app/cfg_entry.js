@@ -238,7 +238,7 @@ async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult, res
             console.log("Is in language: "+inLanguage);
             console.log(cyk_grid);
            
-            setResult([cyk_grid, inLanguage, root]);
+            setResult([cyk_grid, inLanguage, root, word]);
             console.log(resultsPanel)
             resultsPanel.current.scrollIntoView()
             
