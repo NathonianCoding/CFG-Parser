@@ -10,11 +10,11 @@ export default function Results({resultsPanel, result}){
     console.log(result);
     let [diagram, setDiagram] = useState(0); // 0 means display CYK grid 1 means displays parse tree
     return (
-        <section ref = {resultsPanel} id="results" className="bg-slate-100 min-h-screen">
+        <section ref = {resultsPanel} id="results" className="bg-slate-100 h-auto">
             <DiagramButtons diagram = {diagram} setDiagram={setDiagram}/>
-            <div className="h-120 border border-dashed border-black-300">
-              <Diagram diagram = {diagram} result = {result}/>  
-            </div>
+            
+            <Diagram diagram = {diagram} result = {result}/>  
+           
         </section>
     );
 }
@@ -57,16 +57,28 @@ function Diagram({diagram, result}){
         // render diagram
         if (diagram == 0){
             console.log("grid");
-            return <CYKgrid grid={result[0]} word = {result[3]}/>
+            return (
+                <div className="h-auto border border-dashed border-black-300">
+                    <CYKgrid grid={result[0]} word = {result[3]}/>
+                </div>
+            );
         }
         else{
             if (result[1] == true){
             console.log(result[2])
-            return <Tree data={result[2]} orientation='vertical' pathFunc={straightPathFunc} renderCustomNodeElement={renderCustomNode} collapsible={false}/>
+            return (
+                <div className="h-90 border border-dashed border-black-300">
+                    <Tree data={result[2]} orientation='vertical' pathFunc={straightPathFunc} renderCustomNodeElement={renderCustomNode} collapsible={false}/>
+                </div>
+            );
   
             }
             else{
-                return <p className="text-center m-2">The word entered cannot be derived from the CFG</p>
+                return (
+                    <div className="h-90 border border-dashed border-black-300">
+                        <p className="text-center m-2">The word entered cannot be derived from the CFG</p>
+                    </div>
+                );
             }
         }
         
@@ -123,34 +135,35 @@ function CYKgrid({grid, word}){
     console.log(word_as_array) 
     
    return (
+    <div className='w-full overflow-x-auto'>
+        <table className='ml-auto mr-auto mt-2'>
+            <tbody>
+            {grid.map((row, rowIdx) => {
+                return (
+                    <tr key={rowIdx}>
+                    <th scope='col'>{grid.length-rowIdx}</th>
+                    {row.map((cell, colIdx) => {
+                        return (
+                        <td key={colIdx} className='p-2 border border-black'>
+                            {cell.length === 0 ? "-" : cell.join(", ")}
+                        </td>
+                        );
+                    })}
+                    </tr>
+                );
+            })}
 
-    <table className='ml-auto mr-auto mt-2'>
-        <tbody>
-        {grid.map((row, rowIdx) => {
-            return (
-                <tr key={rowIdx}>
-                <th scope='col'>{grid.length-rowIdx}</th>
-                {row.map((cell, colIdx) => {
-                    return (
-                    <td key={colIdx} className='p-2 border border-black'>
-                        {cell.length === 0 ? "-" : cell.join(", ")}
+            <tr>
+                <td></td>
+                {word_as_array.map((letter, idx)=>(
+                    <td key = {idx} className='text-center'>
+                        {letter}
                     </td>
-                    );
-                })}
-                </tr>
-            );
-        })}
-
-        <tr>
-            <td></td>
-            {word_as_array.map((letter, idx)=>(
-                <td key = {idx} className='text-center'>
-                    {letter}
-                </td>
-            ))}
-        </tr>
-        </tbody>
-    </table>
+                ))}
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
   
 
