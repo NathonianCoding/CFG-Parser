@@ -269,11 +269,14 @@ function isNullable(key, map, visited){
     for (let production of map.get(key)){
         let res = true;
         for (let symbol of production){
-            // prevents infinte loop when symbol is equal to the 
-            if (!visited.includes(symbol)){
+            // if symbol is a terminal then res is false, otherwise we call isNullable on the non-terminal
+            if (/[A-Z][0-9]*/.test(symbol)){ 
+               if (!visited.includes(symbol)){
                 res = res &&isNullable(symbol, map, visited)
 
+                } 
             }
+            else{res = false;}
         }
         if (res){
             return true
