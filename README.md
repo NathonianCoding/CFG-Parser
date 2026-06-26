@@ -17,3 +17,5 @@ npm run dev
 - Tailwind.css
 - Vitest
 
+## Live
+https://cfg-parser-mu.vercel.app/
