@@ -5,6 +5,7 @@ import {formatCFG, checkInCNF} from './CNF_format_check'
 import { Popover } from "@headlessui/react";
 import { convert_to_CNF } from './CNF_conversion';
 import { CYK } from './CYK';
+import { makeUnambiguous } from './CNF_format_check';
 
 
 export default function Form({setResult, resultsPanel}){
@@ -199,7 +200,7 @@ function clean_cfg_string(cfg){
     return newString;
 }
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
-async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel){
+function handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel){
   
     e.preventDefault()
     word=word.replaceAll("ε", "");
@@ -250,7 +251,7 @@ async function handleSubmission(e, cfg, word, setValid, setInCNF, setResult, res
 function handleConversion(e, cfg, cfgTextArea, setText){
     cfg = clean_cfg_string(cfg);
     if (isValidCFG(cfg)){
-        let cfgHashMap = formatCFG(cfg);
+        let cfgHashMap = makeUnambiguous(formatCFG(cfg));
         let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
         
         let [cfg_in_CNF, newStart] = convert_to_CNF(cfgHashMap, startVar);

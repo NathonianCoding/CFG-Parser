@@ -1,4 +1,6 @@
-﻿// formats cfg into a hashmap where the key is a string and the value is a 2d array
+﻿import { getSubArrayIndex } from "./CNF_conversion";
+
+// formats cfg into a hashmap where the key is a string and the value is a 2d array
 export function formatCFG(cfg){
     let formattedCFG = new Map();
     let array=cfg.split(';');
@@ -139,3 +141,23 @@ function checkTerm(array){
     return true;
 }
 
+
+// takes a cfg hash map as an input and removes ambiguous rules
+export function makeUnambiguous(cfg){
+    for (let [key, value] of cfg){
+        for (let production of value){
+            let hashset = new Set(production);
+            if (hashset.size == 1 && hashset.has(key)){
+                value.splice(getSubArrayIndex(production, value),1);
+                for (let prod of value){
+                    if (prod.toString()!=''){
+                        prod.push(key);
+                    }
+                    
+                }
+                cfg.set(key, value);
+            }
+        }
+    }
+    return cfg;
+}

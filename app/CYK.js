@@ -7,6 +7,7 @@
 
 // Creates and fills the CYK table
 export function CYK(cfg, word, start) {
+    console.log("VAMOS")
     let CYK_grid = [];
 
     for (let i = word.length; i > 0; i--) {

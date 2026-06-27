@@ -77,7 +77,7 @@ function applyDelRule(map, start){
 }
 
 // returns index of first instance of a subarray in a 2d array
-function getSubArrayIndex(subarray, arr){
+export function getSubArrayIndex(subarray, arr){
     let string = subarray.toString();
     for (let i=0; i<arr.length; i++){
         if (arr[i].toString() == string){
