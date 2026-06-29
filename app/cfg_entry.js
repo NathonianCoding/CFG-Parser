@@ -19,6 +19,8 @@ export default function Form({setResult, resultsPanel}){
 
     let [validCFG, setValid] = useState(true);
     let [inCNF, setInCNF] = useState(true);
+
+    let [parseButtonDisabled, setParserDisabled] = useState(false);
     return (
 
         <form id='parser' className="bg-white rounded-2xl shadow-xl shadow-slate-200 border border-slate-100 p-8 flex flex-col gap-6">
@@ -89,19 +91,31 @@ export default function Form({setResult, resultsPanel}){
 
                         <button
                             type="button"
-                            onClick={async (e)=>handleConversion(e, cfg, cfgTextArea, setText)}
+                            onClick={(e)=>handleConversion(e, cfg, cfgTextArea, setText)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
                             Convert to CNF
                         </button>
-
+                        {parseButtonDisabled == false?
                         <button
+                            disabled = {parseButtonDisabled}
                             type="submit"
-                            onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel)}
+                            onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel, setParserDisabled)}
                             className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
                         >
                             Parse
                         </button>
+                        :
+                        <button
+                            disabled = {parseButtonDisabled}
+                            type="submit"
+                            onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel, setParserDisabled)}
+                            className="flex-1 py-2.5 bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
+                        >
+                            Parse
+                        </button>
+                        }
+                        
                     </div>
             
               
@@ -199,10 +213,16 @@ function clean_cfg_string(cfg){
     }
     return newString;
 }
+
+
 // updates validity of cfg so the UI can be updated. Once cfg is valid it executes the CYK algorithm
-function handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel){
+function handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel, setParserDisabled){
   
+   
+    
+    
     e.preventDefault()
+
     word=word.replaceAll("ε", "");
 
     console.log("Word: "+word);
@@ -233,19 +253,33 @@ function handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPa
         }
     
         setInCNF(isInCNF);
-
+        
         if (isInCNF){
-            let [cyk_grid, inLanguage, root] = CYK(cfgHashMap, word, startVar);
-            console.log("Is in language: "+inLanguage);
-            console.log(cyk_grid);
-           
-            setResult([cyk_grid, inLanguage, root, word]);
-            console.log(resultsPanel)
-            resultsPanel.current.scrollIntoView()
+            let CYK_worker = new Worker(new URL('./workers/CYK.worker.js', import.meta.url), {
+            type: 'module',
+            });
+            setParserDisabled(true);
+            CYK_worker.postMessage([cfgHashMap, word, startVar]);
+
+            CYK_worker.onmessage = (e) =>{
+                console.log(e.data);
+                let [cyk_grid, inLanguage, root] = e.data;
+                console.log("Is in language: "+inLanguage);
+                console.log(cyk_grid);
+            
+                setResult([cyk_grid, inLanguage, root, word]);
+                console.log(resultsPanel);
+                resultsPanel.current.scrollIntoView();
+                CYK_worker.terminate();
+                setParserDisabled(false);
+            }
+          
+            
             
         }
         
     }
+    
 }
 
 function handleConversion(e, cfg, cfgTextArea, setText){

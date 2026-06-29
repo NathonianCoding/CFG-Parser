@@ -3,6 +3,8 @@
     "dev": "next dev",
     "build": "next build",
     "test": "vitest"
+    
+    
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
