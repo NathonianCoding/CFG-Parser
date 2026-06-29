@@ -21,6 +21,7 @@ export default function Form({setResult, resultsPanel}){
     let [inCNF, setInCNF] = useState(true);
 
     let [parseButtonDisabled, setParserDisabled] = useState(false);
+    let [convertButtonDisabled, setConverterDisabled] = useState(false);
     return (
 
         <form id='parser' className="bg-white rounded-2xl shadow-xl shadow-slate-200 border border-slate-100 p-8 flex flex-col gap-6">
@@ -89,32 +90,36 @@ export default function Form({setResult, resultsPanel}){
                         >ε
                         </button>
 
+                        
                         <button
+                            disabled = {convertButtonDisabled}
                             type="button"
-                            onClick={(e)=>handleConversion(e, cfg, cfgTextArea, setText)}
-                            className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
-                        >
-                            Convert to CNF
+                            onClick={(e)=>handleConversion(e, cfg, cfgTextArea, setText, setConverterDisabled)}
+                            className={convertButtonDisabled == false?
+                                "flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
+                            :
+                                "flex-1 py-2.5 bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
+                            }
+                            >
+                                Convert to CNF
                         </button>
-                        {parseButtonDisabled == false?
+                        
+                        
                         <button
                             disabled = {parseButtonDisabled}
                             type="submit"
                             onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel, setParserDisabled)}
-                            className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
+                            className={
+                                parseButtonDisabled == false?
+                                "flex-1 py-2.5 bg-slate-900 hover:bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
+                                :
+                                "flex-1 py-2.5 bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
+                            }
+
                         >
                             Parse
                         </button>
-                        :
-                        <button
-                            disabled = {parseButtonDisabled}
-                            type="submit"
-                            onClick={(e)=>handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPanel, setParserDisabled)}
-                            className="flex-1 py-2.5 bg-slate-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 shadow-sm tracking-wide"
-                        >
-                            Parse
-                        </button>
-                        }
+                        
                         
                     </div>
             
@@ -282,52 +287,64 @@ function handleSubmission(e, cfg, word, setValid, setInCNF, setResult, resultsPa
     
 }
 
-function handleConversion(e, cfg, cfgTextArea, setText){
+function handleConversion(e, cfg, cfgTextArea, setText, setConverterDisabled){
     cfg = clean_cfg_string(cfg);
     if (isValidCFG(cfg)){
         let cfgHashMap = makeUnambiguous(formatCFG(cfg));
         let startVar = cfgHashMap.keys().next().value // gets start variable (first key in the hashmap)
         
-        let [cfg_in_CNF, newStart] = convert_to_CNF(cfgHashMap, startVar);
-        console.log("New start: "+ newStart);
-        // converts hashmap into a string
-        let start_rules = cfg_in_CNF.get(newStart);
-        let output = ""+newStart + ' → ';
-        if (start_rules[0][0] == ''){
-            output+='ε';
-        }
-        else{output+=start_rules[0].join('')}
-        start_rules.shift(1);
-        
-        
-        for (let production of start_rules){
-            if (production[0] == ''){
-                output+= " | ε"
-            }
-            else{output+= " | " + production.join('');}
-        }
+        let cnf_converter = new Worker(new URL('./workers/CNF_conversion.worker.js', import.meta.url), {
+        type: 'module',
+        });
+        setConverterDisabled(true);
+        cnf_converter.postMessage([cfgHashMap, startVar]);
+        cnf_converter.onmessage = function(e){
+            let [cfg_in_CNF, newStart] = e.data;
 
-        cfg_in_CNF.delete(newStart);
-
-        for (let [key, value] of cfg_in_CNF){
-            let rule = ';\n'+ key + ' → ' + value[0].join('');
-            value.shift(1);
-            for (let prod of value){
-                if (prod[0] == ''){
-                    rule+= " | ε";
-                }
-                else{
-                    rule += " | " + prod.join('');
-                }
-                
+            console.log("New start: "+ newStart);
+            // converts hashmap into a string
+            let start_rules = cfg_in_CNF.get(newStart);
+            let output = ""+newStart + ' → ';
+            if (start_rules[0][0] == ''){
+                output+='ε';
             }
-            output+=rule;
+            else{output+=start_rules[0].join('')}
+            start_rules.shift(1);
             
+            
+            for (let production of start_rules){
+                if (production[0] == ''){
+                    output+= " | ε"
+                }
+                else{output+= " | " + production.join('');}
+            }
+
+            cfg_in_CNF.delete(newStart);
+
+            for (let [key, value] of cfg_in_CNF){
+                let rule = ';\n'+ key + ' → ' + value[0].join('');
+                value.shift(1);
+                for (let prod of value){
+                    if (prod[0] == ''){
+                        rule+= " | ε";
+                    }
+                    else{
+                        rule += " | " + prod.join('');
+                    }
+                    
+                }
+                output+=rule;
+                
+
+            }
+            cfgTextArea.current.value = output;
+            setText(output);
+            cnf_converter.terminate();
+            setConverterDisabled(false);
+
 
         }
-        cfgTextArea.current.value = output;
-        setText(output);
-
+        
         
     }
     
