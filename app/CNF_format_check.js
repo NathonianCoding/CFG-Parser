@@ -23,9 +23,15 @@ export function formatCFG(cfg){
           
             list_of_vars_2d.push(sublist);
         }
-        // console.log(start);
-        // console.log(list_of_vars_2d);
+        
+
+        //concatenates productions if there are duplicate variables with production rules
+        if (formattedCFG.has(start)){
+            list_of_vars_2d = formattedCFG.get(start).concat(list_of_vars_2d);
+        }
         formattedCFG.set(start, list_of_vars_2d);
+        
+        
     }
     console.log(formattedCFG);
 
