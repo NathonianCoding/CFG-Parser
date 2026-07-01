@@ -140,6 +140,7 @@ function WordEntryBox({word, wordTextArea, setWord}){
             value={word}
             className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent placeholder:text-slate-400 transition"
             placeholder="e.g. aabb"
+            maxLength={500}
         />
 
     );
@@ -173,6 +174,7 @@ function CfgEntryBox({cfg, cfgTextArea, setText, validCFG, inCNF}){
                 value={cfg}
                 className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent placeholder:text-slate-400 transition"
                 placeholder={"S → aSb | ε"}
+                maxLength={500}
             />
         );
      
