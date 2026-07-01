@@ -12,6 +12,7 @@ Once dependencies are installed, run the following command to run the web app lo
 ```
 npm run dev
 ```
+After entering the command above, the application can be found at http://localhost:3000/
 ## The stack
 - Next.js
 - Tailwind.css
